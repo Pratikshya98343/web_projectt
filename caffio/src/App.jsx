@@ -14,6 +14,7 @@ import CaffioAddToCart from "./pages/cart/Cart";
 import Admin from "./pages/adminlogin/Admin"; 
 import AccountProfile from "./pages/AccountProfile/AccountProfile";
 import AccountSetting from "./pages/AccountSetting/AccountSetting";
+import AdminDashboard from "./pages/admindashboard/AdminDashboard";
 
 function App() {
   return (
@@ -39,11 +40,15 @@ function App() {
         <Route path="/adminlogin" element={<Admin />} />
         <Route path="/AccountProfile" element={<AccountProfile />} />
         <Route path="/account-settings" element={<AccountSetting />} />
-
         {/* Signup Route */}
         <Route path="/signup" element={<Signup />} />
 
         <Route path="/cart" element={<CaffioAddToCart />} />
+
+
+        {/* Admin Dashboard Route */}
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
         {/* 404 Page Not Found Route */}
         <Route

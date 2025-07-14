@@ -8,6 +8,11 @@ import dotenv from "dotenv";
 import { authenticateToken } from "./middleware/token-middleware.js";
 import router from "./route/uploadRoutes.js";
 import { createUploadsFolder } from "./security/helper.js";
+import { User } from "./models/user/User.js"; 
+import { seedAdmin } from "./database/seeders/adminSeeder.js";
+import { sequelize } from "./config/database.js"; 
+import { isAdmin } from "./middleware/role-middleware.js"; 
+
 
 dotenv.config();
 

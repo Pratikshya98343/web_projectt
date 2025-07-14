@@ -3,11 +3,15 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 const generateToken = (payload) => {
-
+    console.log('Generating token for payload:', payload); // Debug log
+    
     const options = {
-      expiresIn: process.env.expiresIn, // Token expiration time
+      expiresIn: process.env.expiresIn || '24h', // Token expiration time with fallback
     };
-    return jwt.sign(payload, process.env.secretkey, options);
+    
+    const token = jwt.sign(payload, process.env.secretkey, options);
+    console.log('Generated token:', token); // Debug log
+    return token;
   };
   
   export {

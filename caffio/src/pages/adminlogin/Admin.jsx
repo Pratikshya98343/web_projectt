@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Coffee, User, Lock, Eye, EyeOff } from 'lucide-react';
+import api from '../../api/axios';
 
-export default function adminLogin() {
+export default function AdminLogin() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   });
+
+  useEffect(() => {
+    // Check if already logged in as admin
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('userRole');
+    
+    if (token && userRole === 'admin') {
+      navigate('/admindashboard');
+    }
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -17,10 +30,51 @@ export default function adminLogin() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const [error, setError] = useState('');
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
-    // Handle login logic here
+    setError('');
+    console.log('Submitting login form:', { email: formData.email });
+    
+    try {
+      // Try to login as admin
+      const loginResponse = await api.post('/auth/admin/login', {
+        email: formData.email,
+        password: formData.password
+      });
+
+      console.log('Login response:', loginResponse.data);
+      
+      if (loginResponse.data?.data?.access_token) {
+        const token = loginResponse.data.data.access_token;
+        localStorage.setItem('token', token);
+        localStorage.setItem('userRole', 'admin');
+        
+        // Set token in axios defaults
+        api.defaults.headers.common['Authorization'] = token;
+        
+        console.log('Stored token:', token);
+        console.log('Current axios headers:', api.defaults.headers.common);
+        
+        // Test if we can access protected route
+        try {
+          const testResponse = await api.get('/users');
+          console.log('Test response:', testResponse.data);
+          // If successful, redirect to dashboard
+          navigate('/admindashboard');
+        } catch (testError) {
+          console.error('Failed to access protected route:', testError?.response?.data || testError);
+          setError(`Login successful but failed to access admin features: ${testError?.response?.data?.message || testError.message}`);
+        }
+      } else {
+        console.error('Invalid login response:', loginResponse.data);
+        setError('Invalid login response - No token received');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.response?.data?.message || 'Failed to login. Please check your credentials.');
+    }
   };
 
   return (
@@ -70,7 +124,7 @@ export default function adminLogin() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full pl-12 pr-4 py-4 border border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 bg-white/20 text-white placeholder-gray-300 text-base" // Adjusted background, text, and placeholder colors
+                className="w-full pl-12 pr-4 py-4 border border-black rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 bg-white/20 text-black placeholder-gray-300 text-base" // Adjusted background, text, and placeholder colors
                 placeholder="admin@caffio.com"
                 required
               />
@@ -89,7 +143,7 @@ export default function adminLogin() {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full pl-12 pr-12 py-4 border border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 bg-white/20 text-white placeholder-gray-300 text-base" // Adjusted background, text, and placeholder colors
+                className="w-full pl-12 pr-12 py-4 border border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 bg-white/20 text-black placeholder-gray-300 text-base" // Adjusted background, text, and placeholder colors
                 placeholder="Enter your password"
                 required
               />
@@ -121,6 +175,11 @@ export default function adminLogin() {
           </div>
 
           {/* Login Button */}
+          {error && (
+            <div className="text-red-500 text-sm mb-4">
+              {error}
+            </div>
+          )}
           <button
             onClick={handleSubmit}
             className="w-full bg-gradient-to-r from-amber-600 to-orange-600 text-white py-4 rounded-lg font-medium hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 shadow-lg text-base"
