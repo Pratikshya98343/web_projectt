@@ -1,21 +1,18 @@
-// src/components/Header.jsx
-import React, { useState, useEffect, useRef } from "react"; // Import useState, useEffect, useRef
+import React, { useState, useEffect, useRef } from "react"; 
 import { Link, useNavigate } from "react-router-dom";
-import { FiShoppingCart, FiUser } from "react-icons/fi"; // Assuming react-icons/fi is installed
+import { FiShoppingCart, FiUser } from "react-icons/fi"; 
 
 const Header = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const userMenuRef = useRef(null); // Ref for detecting clicks outside the menu
+  const userMenuRef = useRef(null); 
 
   useEffect(() => {
-    // Check login status from localStorage when the component mounts
     const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(loggedInStatus);
   }, []);
 
-  // Close the menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
@@ -41,23 +38,21 @@ const Header = () => {
   };
 
   const handleAccountProfile = () => {
-    setShowUserMenu(false); // Close menu
+    setShowUserMenu(false); 
     navigate("/accountProfile"); 
   };
 
   const handleAccountSettings = () => {
-    setShowUserMenu(false); // Close menu
+    setShowUserMenu(false);
     navigate("/account-settings"); 
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn"); // Clear login status
-    // In a real app, you'd also remove the auth token
-    // localStorage.removeItem("authToken");
-    setIsLoggedIn(false); // Update state
-    setShowUserMenu(false); // Close menu
-    navigate("/"); // Redirect to homepage or sign-in page
-    window.location.reload(); // Optional: force a reload to update header
+    localStorage.removeItem("isLoggedIn");
+    setIsLoggedIn(false); 
+    setShowUserMenu(false);
+    navigate("/"); 
+    window.location.reload(); 
   };
 
   return (
@@ -76,7 +71,7 @@ const Header = () => {
         <li>
           <Link
             to="/"
-            className="text-white hover:text-slate-200 transition-colors"
+            className="nav-link inline-block px-2 py-1"
           >
             Home
           </Link>
@@ -84,7 +79,7 @@ const Header = () => {
         <li>
           <Link
             to="/about"
-            className="text-white hover:text-slate-200 transition-colors"
+            className="nav-link inline-block px-2 py-1"
           >
             About
           </Link>
@@ -92,7 +87,7 @@ const Header = () => {
         <li>
           <Link
             to="/menu"
-            className="text-white hover:text-slate-200 transition-colors"
+            className="nav-link inline-block px-2 py-1"
           >
             Menu
           </Link>
@@ -100,7 +95,7 @@ const Header = () => {
         <li>
           <Link
             to="/product"
-            className="text-white hover:text-slate-200 transition-colors"
+            className="nav-link inline-block px-2 py-1"
           >
             Product
           </Link>
@@ -108,7 +103,7 @@ const Header = () => {
         <li>
           <Link
             to="/gallery"
-            className="text-white hover:text-slate-200 transition-colors"
+            className="nav-link inline-block px-2 py-1"
           >
             Gallery
           </Link>
@@ -116,7 +111,7 @@ const Header = () => {
         <li>
           <Link
             to="/contact"
-            className="text-white hover:text-slate-200 transition-colors"
+            className="nav-link inline-block px-2 py-1"
           >
             Contact
           </Link>
@@ -125,35 +120,35 @@ const Header = () => {
 
       <div className="flex space-x-6 pr-4 relative">
         <div
-          className="flex items-center space-x-1 transition-colors cursor-pointer"
+          className="flex items-center space-x-1 transition-colors cursor-pointer text-white hover:text-gray-200"
           onClick={handleUserIconClick}
         >
-          <FiUser size={28} />
-          {isLoggedIn && <span className="text-sm"></span>}
+          <FiUser size={28} className="text-white" />
+          {isLoggedIn && <span className="text-sm text-white"></span>}
         </div>
 
         {showUserMenu && isLoggedIn && (
           <div
             ref={userMenuRef}
-            className="absolute top-full right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"
+            className="absolute top-full right-0 mt-2 w-48 bg-[#271001] rounded-md shadow-lg py-1 z-50"
           >
             <button
               onClick={handleAccountProfile}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-amber-900"
             >
               Account
             </button>
 
             <button
               onClick={handleAccountSettings}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-amber-900"
             >
               Settings
             </button>
 
             <button
               onClick={handleLogout}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-amber-900"
             >
               Logout
             </button>
@@ -162,9 +157,9 @@ const Header = () => {
 
         <Link
           to="/cart"
-          className="flex items-center space-x-1 transition-colors"
+          className="flex items-center space-x-1 transition-colors text-white hover:text-gray-200"
         >
-          <FiShoppingCart size={28} className="ml-4" />
+          <FiShoppingCart size={28} className="ml-4 text-white" />
         </Link>
       </div>
     </nav>

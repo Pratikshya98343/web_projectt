@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +28,6 @@ function SignIn() {
     },
   };
 
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -39,18 +37,18 @@ function SignIn() {
 
     try {
       const response = await api.post("/auth/login", userData);
-      if (response.status !== 200) {
-        console.error("Login failed with status:", response?.data?.message);
+
+      if (response.status === 200) {
+        localStorage.setItem("isLoggedIn", "true");
+        navigate("/");
         return;
       }
 
-
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("/"); 
-      window.location.reload(); 
+      console.error("Login failed with status:", response?.data?.message);
     } catch (error) {
-      console.error("Login failed:", error?.response?.data?.message);
-      setError("password", { type: "manual", message: "Invalid credentials" });
+      const message =
+        error?.response?.data?.message || "Invalid email or password";
+      setError("password", { type: "manual", message });
     }
   };
 
@@ -67,7 +65,7 @@ function SignIn() {
       type="button"
       onClick={togglePasswordVisibility}
       className="absolute inset-y-0 right-0 pr-3 flex items-center"
-      aria-label={showPassword ? "Hide password" : "Show password"}
+     
     >
       <svg
         fill="none"
@@ -107,9 +105,9 @@ function SignIn() {
         </div>
         <input
           id="password"
-          type={showPassword ? "text" : "password"} 
+          type={showPassword ? "text" : "password"}
           {...register("password", passwordValidation)}
-          className={`w-full text-black pl-10 pr-16 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${
+          className={`w-full text-black pl-10 pr-16 py-3 border rounded-xl focus:ring-2 focus:ring-[#6F4E37] focus:border-transparent transition-all ${
             errors.password ? "border-red-300 bg-red-50" : "border-gray-300"
           }`}
           placeholder="Enter your password"
@@ -155,19 +153,19 @@ function SignIn() {
   );
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-50 p-4">
+    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#F5E6D3] via-[#DCC7B1] to-[#6F4E37] p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-16 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-            <LockIcon className="w-8 h-8 text-white" />
+        <div className="text-center mb--8">
+          <div className="w-16 h-14 bg-gradient-to-r from-[#6F4E37] to-[#5D3A2A] rounded-2xl mx-auto flex items-end justify-center pb-1">
+            <LockIcon className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-[#3E2723] mb-2">
             Welcome back
           </h1>
           <p className="text-gray-600">Sign in to your account to continue</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-[#D2B48C]">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label
@@ -190,7 +188,7 @@ function SignIn() {
                       message: "Please enter a valid email address",
                     },
                   })}
-                  className={`w-full text-black pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${
+                  className={`w-full text-black pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#6F4E37] focus:border-transparent transition-all ${
                     errors.email
                       ? "border-red-300 bg-red-50"
                       : "border-gray-300"
@@ -206,19 +204,20 @@ function SignIn() {
             </div>
 
             <PasswordField />
+
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input
                   type="checkbox"
                   {...register("rememberMe")}
-                  className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                  className="w-4 h-4 text-[#6F4E37] border-gray-300 rounded focus:ring-[#6F4E37]"
                 />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
               <button
                 type="button"
                 onClick={handleForgotPassword}
-                className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                className="text-sm text-[#6F4E37] hover:text-[#5D3A2A] font-medium"
               >
                 Forgot password?
               </button>
@@ -228,7 +227,7 @@ function SignIn() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-[#6F4E37] to-[#5D3A2A] text-white py-3 px-4 rounded-xl font-medium hover:from-[#5D3A2A] hover:to-[#4B251C] focus:ring-2 focus:ring-[#6F4E37] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <div className="flex items-center justify-center">
@@ -246,14 +245,14 @@ function SignIn() {
               Don't have an account?{" "}
               <button
                 onClick={handleSignUp}
-                className="font-medium text-indigo-600 hover:text-indigo-800"
+                className="font-medium text-[#6F4E37] hover:text-[#5D3A2A]"
               >
                 Sign up
               </button>
             </p>
             <button
               onClick={() => navigate("/adminlogin")}
-              className="mt-4 inline-block font-medium text-purple-600 hover:text-purple-800"
+              className="mt-4 inline-block font-medium text-[#8B5E3C] hover:text-[#6F4E37]"
             >
               Login as Admin
             </button>

@@ -32,27 +32,27 @@ export default function ContactSection() {
   return (
     <section 
       id="contact" 
-      className="relative min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-20 px-5"
+      className="relative min-h-screen bg-gradient-to-br from-[#F5E6D3] via-[#DCC7B1] to-[#6F4E37] py-20 px-5"
     >
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold text-amber-800 container mx-auto px-6 py-12 relative z-10">   
+        <h1 className="text-4xl font-bold text-[#6F4E37] container mx-auto px-6 py-12 relative z-10">   
           CONTACT US
         </h1>
-        <div className="w-24 h-1 bg-orange-400 mx-auto rounded-full mb-6"></div>
-        <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+        <div className="w-24 h-1 bg-[#C19A6B] mx-auto rounded-full mb-6"></div>
+        <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
           We'd love to hear from you! Get in touch with us for any questions about our services, 
           reservations, or just to say hello.
         </p>
       </div>
       
       {/* Main Contact Container */}
-      <div className="max-w-6xxl mx-auto">
+      <div className="max-w-9xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           
           {/* Contact Info Section */}
-          <div className="bg-orange-50 rounded-3xl p-12 shadow-lg">
-            <h3 className="text-4xl font-bold text-gray-800 mb-10">Get In Touch</h3>
+          <div className="bg-[#F8F1E6] rounded-3xl p-12 shadow-lg">
+            <h3 className="text-4xl font-bold text-[#3E2723] mb-10">Get In Touch</h3>
             
             {/* Map Container */}
             <div className="relative overflow-hidden rounded-xl mb-8">
@@ -72,8 +72,8 @@ export default function ContactSection() {
                 </p>
               </div>
               
-              <div className="p-6 bg-orange-100 rounded-xl text-center">
-                <h4 className="text-lg font-semibold text-gray-800 mb-2">Special Events & Catering</h4>
+              <div className="p-6 bg-[#E6D4C0] rounded-xl text-center">
+                <h4 className="text-lg font-semibold text-[#3E2723] mb-2">Special Events & Catering</h4>
                 <p className="text-gray-600">
                   Planning a special event? We offer catering services and private bookings. 
                   Let us know your requirements in the message form!
@@ -83,8 +83,8 @@ export default function ContactSection() {
           </div>
           
           {/* Form Section */}
-          <div className="bg-blue-50 rounded-3xl p-12 shadow-lg">
-            <h2 className="text-4xl font-bold text-gray-800 mb-10">
+          <div className="bg-[#F8F1E6] rounded-3xl p-12 shadow-lg">
+            <h2 className="text-4xl font-bold text-[#3E2723] mb-10">
               Send Us a Message
             </h2>
             
@@ -101,7 +101,7 @@ export default function ContactSection() {
                   onChange={handleInputChange}
                   placeholder="Enter your full name"
                   required
-                  className="w-full p-4 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all duration-200"
+                  className="w-full p-4 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#C19A6B] focus:ring-2 focus:ring-[#C19A6B]/20 transition-all duration-200"
                 />
               </div>
 
@@ -117,7 +117,7 @@ export default function ContactSection() {
                   onChange={handleInputChange}
                   placeholder="Enter your email address"
                   required
-                  className="w-full p-4 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all duration-200"
+                  className="w-full p-4 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#C19A6B] focus:ring-2 focus:ring-[#C19A6B]/20 transition-all duration-200"
                 />
               </div>
 
@@ -132,7 +132,7 @@ export default function ContactSection() {
                   value={formData.phone}
                   onChange={handleInputChange}
                   placeholder="Enter your phone number"
-                  className="w-full p-4 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all duration-200"
+                  className="w-full p-4 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#C19A6B] focus:ring-2 focus:ring-[#C19A6B]/20 transition-all duration-200"
                 />
               </div>
 
@@ -148,7 +148,7 @@ export default function ContactSection() {
                   rows={5}
                   placeholder="Tell us what's on your mind..."
                   required
-                  className="w-full p-4 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20 transition-all duration-200 resize-none"
+                  className="w-full p-4 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-[#C19A6B] focus:ring-2 focus:ring-[#C19A6B]/20 transition-all duration-200 resize-none"
                 />
               </div>
 
@@ -156,7 +156,7 @@ export default function ContactSection() {
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="w-full py-4 px-6 bg-orange-400 hover:bg-orange-500 rounded-lg font-semibold text-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                className="w-full py-4 px-6 bg-[#6F4E37] hover:bg-[#5D3A2A] rounded-lg font-semibold text-lg text-white transition-colors duration-200 shadow-md hover:shadow-lg"
               >
                 Send Message
               </button>

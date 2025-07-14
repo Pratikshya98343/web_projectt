@@ -16,7 +16,7 @@ export default function AdminLogin() {
     // Check if already logged in as admin
     const token = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
-    
+
     if (token && userRole === 'admin') {
       navigate('/admindashboard');
     }
@@ -31,37 +31,30 @@ export default function AdminLogin() {
   };
 
   const [error, setError] = useState('');
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     console.log('Submitting login form:', { email: formData.email });
-    
+
     try {
-      // Try to login as admin
       const loginResponse = await api.post('/auth/admin/login', {
         email: formData.email,
         password: formData.password
       });
 
       console.log('Login response:', loginResponse.data);
-      
+
       if (loginResponse.data?.data?.access_token) {
         const token = loginResponse.data.data.access_token;
         localStorage.setItem('token', token);
         localStorage.setItem('userRole', 'admin');
-        
-        // Set token in axios defaults
+
         api.defaults.headers.common['Authorization'] = token;
-        
-        console.log('Stored token:', token);
-        console.log('Current axios headers:', api.defaults.headers.common);
-        
-        // Test if we can access protected route
+
         try {
           const testResponse = await api.get('/users');
           console.log('Test response:', testResponse.data);
-          // If successful, redirect to dashboard
           navigate('/admindashboard');
         } catch (testError) {
           console.error('Failed to access protected route:', testError?.response?.data || testError);
@@ -78,7 +71,8 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-br from-amber-900 via-orange-800 to-yellow-600 flex items-center justify-center relative overflow-hidden">
+    <div className="w-screen h-screen bg-gradient-to-br from-[#F5E6D3] via-[#DCC7B1] to-[#6F4E37] flex items-center justify-center relative overflow-hidden">
+      
       {/* Animated Coffee Beans Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(8)].map((_, i) => (
@@ -95,36 +89,37 @@ export default function AdminLogin() {
         ))}
       </div>
 
-      {/* Main Login Container - Now full page with background */}
-      <div className="bg-white backdrop-blur-sm rounded-3xl shadow-2xl p-7 w-full max-w-lg relative border border-white flex flex-col items-center justify-center">
+      {/* Main Login Container */}
+      <div className="bg-white backdrop-blur-sm rounded-3xl shadow-2xl p-7 w-full max-w-lg relative border border-[#D2B48C] flex flex-col items-center justify-center">
+
         {/* Header Section */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#6F4E37] to-[#5D3A2A] rounded-full mb-4 shadow-lg">
             <Coffee className="w-10 h-10 text-black animate-pulse" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-800 to-orange-700 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#6F4E37] to-[#5D3A2A] bg-clip-text text-transparent mb-2">
             Caffio Admin
           </h1>
-          <p className="text-black text-sm"> {/* Changed text color to white */}
+          <p className="text-gray-600 text-sm">
             Fuel your business with coffee analytics
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="space-y-8 w-full max-w-md"> {/* Added max-w-md for form width control */}
+        <div className="space-y-8 w-full max-w-md">
           {/* Email Field */}
           <div className="relative">
-            <label className="block text-sm font-medium text-black mb-3"> {/* Changed text color to white */}
+            <label className="block text-sm font-medium text-gray-700 mb-3">
               Email Address
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-300 w-5 h-5" /> {/* Adjusted icon color */}
+              <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full pl-12 pr-4 py-4 border border-black rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 bg-white/20 text-black placeholder-gray-300 text-base" // Adjusted background, text, and placeholder colors
+                className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6F4E37] focus:border-[#6F4E37] transition-all duration-200 bg-white/20 text-black placeholder-gray-400 text-base"
                 placeholder="admin@caffio.com"
                 required
               />
@@ -133,24 +128,24 @@ export default function AdminLogin() {
 
           {/* Password Field */}
           <div className="relative">
-            <label className="block text-sm font-medium text-black mb-3"> {/* Changed text color to white */}
+            <label className="block text-sm font-medium text-gray-700 mb-3">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-300 w-5 h-5" /> {/* Adjusted icon color */}
+              <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full pl-12 pr-12 py-4 border border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 bg-white/20 text-black placeholder-gray-300 text-base" // Adjusted background, text, and placeholder colors
+                className="w-full pl-12 pr-12 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6F4E37] focus:border-[#6F4E37] transition-all duration-200 bg-white/20 text-black placeholder-gray-400 text-base"
                 placeholder="Enter your password"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-300 hover:text-white transition-colors" // Adjusted icon color
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -165,24 +160,26 @@ export default function AdminLogin() {
                 name="rememberMe"
                 checked={formData.rememberMe}
                 onChange={handleInputChange}
-                className="w-4 h-4 text-amber-600 border-gray-500 rounded focus:ring-amber-500 bg-white/20" // Adjusted border and background
+                className="w-4 h-4 text-[#6F4E37] border-gray-300 rounded focus:ring-[#6F4E37] bg-white/20"
               />
-              <span className="ml-2 text-sm text-black">Remember me</span> {/* Changed text color to white */}
+              <span className="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
-            <a href="#" className="text-sm text-amber-300 hover:text-amber-100 transition-colors"> {/* Adjusted link color */}
+            <a href="#" className="text-sm text-[#6F4E37] hover:text-[#5D3A2A] transition-colors">
               Forgot password?
             </a>
           </div>
 
-          {/* Login Button */}
+          {/* Error Message */}
           {error && (
-            <div className="text-red-500 text-sm mb-4">
+            <div className="text-red-600 text-sm mb-4">
               {error}
             </div>
           )}
+
+          {/* Login Button */}
           <button
             onClick={handleSubmit}
-            className="w-full bg-gradient-to-r from-amber-600 to-orange-600 text-white py-4 rounded-lg font-medium hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 shadow-lg text-base"
+            className="w-full bg-gradient-to-r from-[#6F4E37] to-[#5D3A2A] text-white py-4 rounded-lg font-medium hover:from-[#5D3A2A] hover:to-[#4B251C] focus:outline-none focus:ring-2 focus:ring-[#6F4E37] focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 shadow-lg text-base"
           >
             Sign In to Dashboard
           </button>
@@ -191,8 +188,8 @@ export default function AdminLogin() {
         {/* Coffee Steam Animation */}
         <div className="absolute -top-2 -right-2 w-8 h-8 opacity-20">
           <div className="w-2 h-2 bg-amber-400 rounded-full animate-ping"></div>
-          <div className="w-2 h-2 bg-amber-400 rounded-full animate-ping animation-delay-200 ml-2"></div>
-          <div className="w-2 h-2 bg-amber-400 rounded-full animate-ping animation-delay-400 ml-1"></div>
+          <div className="w-2 h-2 bg-amber-400 rounded-full animate-ping delay-200 ml-2"></div>
+          <div className="w-2 h-2 bg-amber-400 rounded-full animate-ping delay-400 ml-1"></div>
         </div>
       </div>
     </div>

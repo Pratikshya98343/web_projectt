@@ -13,9 +13,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --nav-text-color: #ffffff;
 }
 
 a {
+  all: unset;
+  cursor: pointer;
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
@@ -54,6 +58,16 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.nav-link {
+  color: var(--nav-text-color) !important;
+  text-decoration: none !important;
+  position: relative;
+}
+
+.nav-link:hover {
+  opacity: 0.8;
 }
 
 @media (prefers-color-scheme: light) {

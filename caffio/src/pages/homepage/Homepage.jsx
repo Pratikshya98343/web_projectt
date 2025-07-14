@@ -102,7 +102,7 @@ const Welcome = () => {
             {/* Menu Button */}
             <button
               className="group relative px-10 py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-xl rounded-full shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300 overflow-hidden"
-              onClick={() => navigate('/menu')} // Navigate to Menu page
+              onClick={() => navigate('/menu')}
             >
               <span className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="relative z-10 flex items-center gap-2">
@@ -123,10 +123,9 @@ const Welcome = () => {
               </span>
             </button>
 
-            {/* Gallery Button */}
             <button
               className="group relative px-10 py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-xl rounded-full shadow-2xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300 overflow-hidden"
-              onClick={() => navigate('/gallery')} // Navigate to Gallery page
+              onClick={() => navigate('/gallery')} 
             >
               <span className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="relative z-10 flex items-center gap-2">

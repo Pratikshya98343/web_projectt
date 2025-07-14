@@ -26,50 +26,63 @@ const AdminDashboard = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingMenu, setEditingMenu] = useState(null);
+  const [orderFilter, setOrderFilter] = useState('all'); // New state for order filter
 
   // Sample data - in a real app, this would come from an API
   const [products, setProducts] = useState([
     {
       id: 1,
-      name: 'Espresso',
+      name: 'Colombian Supremo - Smooth & Balanced',
       price: 2.50,
       category: 'Coffee',
-      image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=200&h=200&fit=crop',
+      image:  "./image/product2.png",
       stock: 50
     },
     {
       id: 2,
-      name: 'Cappuccino',
+      name: 'Sumatra Mandheling - Earthy & Bold"',
       price: 3.50,
       category: 'Coffee',
-      image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=200&h=200&fit=crop',
+      image: "./image/product3.png",
       stock: 45
     },
     {
       id: 3,
-      name: 'Croissant',
+      name: 'Brazil Santos - Sweet & Nutty',
       price: 2.00,
       category: 'Pastry',
-      image: 'https://images.unsplash.com/photo-1555507036-ae8c22d84d8c?w=200&h=200&fit=crop',
+      image: "./image/product5.png",
       stock: 20
     }
   ]);
 
   const [menuItems, setMenuItems] = useState([
-    {
+      {
       id: 1,
-      name: 'Morning Special',
-      description: 'Coffee + Pastry combo',
-      price: 4.50,
-      available: true
+      name:  "Chocolate Mocha Black Coffee Premium Blend",
+      price: 2.50,
+      category: 'Coffee',
+      image:  "./image/menu5.png",
+      stock: 50
     },
-    {
+
+      {
       id: 2,
-      name: 'Afternoon Delight',
-      description: 'Latte + Sandwich',
-      price: 6.00,
-      available: true
-    }
+      name:  "Vanilla Latte Smooth Coffee with Premium Milk",
+      price: 2.50,
+      category: 'Coffee',
+      image: "./image/menu3.png",
+      stock: 50
+    },
+
+       {
+      id:3,
+      name:  "Caramel Macchiato Black Coffee with Sweet Touch",
+      price: 2.50,
+      category: 'Coffee',
+      image: "./image/menu6.png",
+      stock: 50
+    },
   ]);
 
   const [orders, setOrders] = useState([
@@ -227,7 +240,7 @@ const AdminDashboard = () => {
   };
 
   const Sidebar = () => (
-    <div className="m-0 box-border font-sans bg-gradient-to-b from-amber-900 to-amber-800 text-black min-h-screen p-5">
+    <div className="w-72 m-0 box-border font-sans bg-gradient-to-b from-amber-900 to-amber-800 text-black min-h-screen p-5">  {/* Added fixed width */}
       <div className="max-w-6xl mx-auto px-1 py-30">
         <div className="flex items-center space-x-2 mb-8">
           <Coffee className="h-8 w-8 text-amber-200" />
@@ -287,129 +300,236 @@ const AdminDashboard = () => {
     </div>
   );
 
-const DashboardContent = () => (
-  <div className="space-y-4">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 px-20 py-30">
-      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-amber-500 h-50 w-50">
-        <div className="flex items-center">
-          <DollarSign className="text-amber-600" />
-          <div className="ml-2">
-            <p className="text-sm text-gray-600">Total Revenue</p>
-            <p className="text-2xl font-bold text-gray-800">$2,847</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-        <div className="flex items-center">
-          <ShoppingCart className="h-30 w-90 text-green-600" />
-          <div className="ml-4">
-            <p className="text-sm text-gray-600">Total Orders</p>
-            <p className="text-2xl font-bold text-gray-800">{orders.length}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-        <div className="flex items-center">
-          <Users className="h-8 w-8 text-blue-600" />
-          <div className="ml-4">
-            <p className="text-sm text-gray-600">Customers</p>
-            <p className="text-2xl font-bold text-gray-800">156</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
-        <div className="flex items-center">
-          <TrendingUp className="h-8 w-8 text-purple-600" />
-          <div className="ml-4">
-            <p className="text-sm text-gray-600">Growth</p>
-            <p className="text-2xl font-bold text-gray-800">+12%</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h3 className="text-lg font-semibold mb-4">Recent Orders</h3>
-        <div className="space-y-3">
-          {orders.slice(0, 3).map(order => (
-            <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div>
-                <p className="font-medium">{order.customerName}</p>
-                <p className="text-sm text-gray-600">{order.items.map(item => item.name).join(', ')}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-bold text-amber-600">${order.total}</p>
-                <p className="text-xs text-gray-500">{order.time}</p>
-              </div>
+  const DashboardContent = () => (
+    <div className="space-y-4 px-20 py-20"> {/* Changed py-40 to py-20 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 px-20 py-10"> {/* Changed py-30 to py-10 */}
+        {/* Stats Cards with enhanced design */}
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-amber-500 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center">
+            <div className="bg-amber-100 p-3 rounded-full">
+              <DollarSign className="h-6 w-6 text-amber-600" />
             </div>
-          ))}
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+              <p className="text-2xl font-bold text-gray-800">$2,847</p>
+              <p className="text-xs text-green-500">+12% from last month</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center">
+            <div className="bg-green-100 p-3 rounded-full">
+              <ShoppingCart className="h-6 w-6 text-green-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Total Orders</p>
+              <p className="text-2xl font-bold text-gray-800">{orders.length}</p>
+              <p className="text-xs text-green-500">+5% from last week</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center">
+            <div className="bg-blue-100 p-3 rounded-full">
+              <Users className="h-6 w-6 text-blue-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Customers</p>
+              <p className="text-2xl font-bold text-gray-800">156</p>
+              <p className="text-xs text-green-500">+8% new users</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center">
+            <div className="bg-purple-100 p-3 rounded-full">
+              <TrendingUp className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Growth</p>
+              <p className="text-2xl font-bold text-gray-800">+12%</p>
+              <p className="text-xs text-green-500">+3% from last month</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h3 className="text-lg font-semibold mb-4">Top Products</h3>
-        <div className="space-y-3">
-          {products.slice(0, 3).map(product => (
-            <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center">
-                <img src={product.image} alt={product.name} className="w-10 h-10 rounded-lg object-cover" />
-                <div className="ml-3">
-                  <p className="font-medium">{product.name}</p>
-                  <p className="text-sm text-gray-600">{product.category}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Orders Card with enhanced design */}
+        <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-semibold text-gray-800">Recent Orders</h3>
+            <button className="text-amber-600 hover:text-amber-700 text-sm font-medium">View All</button>
+          </div>
+          <div className="space-y-4">
+            {orders.slice(0, 3).map(order => (
+              <div key={order.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-amber-100 p-2 rounded-full">
+                    <ShoppingCart className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800">{order.customerName}</p>
+                    <p className="text-sm text-gray-600">{order.items.map(item => item.name).join(', ')}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-amber-600">${order.total}</p>
+                  <p className="text-xs text-gray-500">{order.time}</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="font-bold text-amber-600">${product.price}</p>
-                <p className="text-xs text-gray-500">Stock: {product.stock}</p>
+            ))}
+          </div>
+        </div>
+
+        {/* Top Products Card with enhanced design */}
+        <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-semibold text-gray-800">Top Products</h3>
+            <button className="text-amber-600 hover:text-amber-700 text-sm font-medium">View All</button>
+          </div>
+          <div className="space-y-4">
+            {products.slice(0, 3).map(product => (
+              <div key={product.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div className="flex items-center space-x-4">
+                  <img src={product.image} alt={product.name} className="w-12 h-12 rounded-lg object-cover ring-2 ring-gray-200" />
+                  <div>
+                    <p className="font-medium text-gray-800">{product.name}</p>
+                    <p className="text-sm text-gray-600">{product.category}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-amber-600">${product.price}</p>
+                  <p className="text-xs text-gray-500">Stock: {product.stock}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 
 
   const ProductsContent = () => (
-    <div className="space-y-10 px-40 py-50">
-      <div className="flex justify-between items-center ">
-        <h2 className="text-2xl font-bold text-gray-800">Products Management</h2>
+    <div className="space-y-10 px-20 py-40">  {/* Updated padding */}
+      {/* Header with enhanced design */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-3xl font-bold text-gray-800">Products Management</h2>
+          <p className="text-gray-600 mt-1">Manage your product inventory and details</p>
+        </div>
         <button
           onClick={() => setShowAddProductModal(true)}
-          className="bg-amber-600 hover:bg-amber-700 text-black px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          className="bg-amber-600 hover:bg-amber-700 text-black px-6 py-3 rounded-xl flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl"
         >
-          <Plus className="h-4 w-4" />
-          <span>Add Product</span>
+          <Plus className="h-5 w-5" />
+          <span className="font-medium">Add Product</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-1 py-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-2 py-12">
         {products.map(product => (
-          <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+          <div key={product.id} className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div className="relative">
+              <img 
+                src={product.image} 
+                alt={product.name} 
+                className="w-full h-56 object-cover hover:scale-105 transition-transform duration-300" 
+              />
+              <span className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-medium text-gray-700 shadow-md">
+                {product.category}
+              </span>
+            </div>
             <div className="p-6">
-              <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-              <p className="text-gray-600 mb-2">{product.category}</p>
+              <h3 className="text-xl font-bold mb-2 text-gray-800">{product.name}</h3>
               <div className="flex justify-between items-center mb-4">
-                <span className="text-xl font-bold text-amber-600">${product.price}</span>
-                <span className="text-sm text-gray-500">Stock: {product.stock}</span>
+                <span className="text-2xl font-bold text-amber-600">${product.price.toFixed(2)}</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  product.stock > 20 ? 'bg-green-100 text-green-800' : 
+                  product.stock > 10 ? 'bg-yellow-100 text-yellow-800' : 
+                  'bg-red-100 text-red-800'
+                }`}>
+                  Stock: {product.stock}
+                </span>
+              </div>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => handleEditProduct(product)}
+                  className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors border border-blue-200"
+                >
+                  <Edit className="h-4 w-4" />
+                  <span className="font-medium">Edit</span>
+                </button>
+                <button
+                  onClick={() => handleDeleteProduct(product.id)}
+                  className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors border border-red-200"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="font-medium">Delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const MenuContent = () => (
+    <div className="space-y-6 px-20 py-40">  {/* Already correct padding */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-gray-800">Menu Management</h2>
+        <button
+          onClick={() => setShowAddMenuModal(true)}
+          className="bg-amber-600 hover:bg-amber-700 text-black px-6 py-3 rounded-xl flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
+          <Plus className="h-5 w-5" />
+          <span className="font-medium">Add Menu</span>
+        </button>
+      </div>
+
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-2 py-10 max-w-[1400px] mx-auto"> {/* Added max-width and increased gap */}
+        {menuItems.map(menu => (
+          <div key={menu.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300">
+            <div className="relative">
+              <img 
+                src={menu.image || 'https://via.placeholder.com/400x200'} 
+                alt={menu.name} 
+                className="w-full h-56 object-cover" // Increased image height
+              />
+              <span className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-medium text-gray-700 shadow-md">
+                {menu.category}
+              </span>
+            </div>
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">{menu.name}</h3>
+                  <p className="text-gray-600 mb-2">{menu.description}</p>
+                  <span className="text-xl font-bold text-amber-600">${menu.price}</span>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  menu.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}>
+                  {menu.available ? 'Available' : 'Unavailable'}
+                </span>
               </div>
               <div className="flex space-x-2">
                 <button
-                  onClick={() => handleEditProduct(product)}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-black py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                  onClick={() => handleEditMenu(menu)}
+                  className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors border border-blue-200"
                 >
                   <Edit className="h-4 w-4" />
                   <span>Edit</span>
                 </button>
                 <button
-                  onClick={() => handleDeleteProduct(product.id)}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-black py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                  onClick={() => handleDeleteMenu(menu.id)}
+                  className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors border border-red-200"
                 >
                   <Trash2 className="h-4 w-4" />
                   <span>Delete</span>
@@ -422,151 +542,135 @@ const DashboardContent = () => (
     </div>
   );
 
-  const MenuContent = () => (
-    <div className="space-y-6 px-70 py-40">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Menu Management</h2>
-        <button
-          onClick={() => setShowAddMenuModal(true)}
-          className="bg-amber-600 hover:bg-amber-700 text-black px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Add Menu</span>
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-1 py-10">
-        {menuItems.map(menu => (
-          <div key={menu.id} className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-lg font-semibold mb-2">{menu.name}</h3>
-                <p className="text-gray-600 mb-2">{menu.description}</p>
-                <span className="text-xl font-bold text-amber-600">${menu.price}</span>
-              </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                menu.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}>
-                {menu.available ? 'Available' : 'Unavailable'}
-              </span>
-            </div>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => handleEditMenu(menu)}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-black py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors"
-              >
-                <Edit className="h-4 w-4" />
-                <span>Edit</span>
-              </button>
-              <button
-                onClick={() => handleDeleteMenu(menu.id)}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-black py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors"
-              >
-                <Trash2 className="h-4 w-4" />
-                <span>Delete</span>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
   const OrdersContent = () => (
-    <div className="space-y-6 px-50 py-40">
-      <h2 className="text-2xl font-bold text-gray-800">Orders Management</h2>
+    <div className="space-y-6 px-20 py-40">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Orders Management</h2>
+          <p className="text-gray-600 mt-1">Track and manage customer orders</p>
+        </div>
+        <div className="flex items-center space-x-4">
+          <select
+            value={orderFilter}
+            onChange={(e) => setOrderFilter(e.target.value)}
+            className="px-4 py-2 rounded-lg border border-amber-200 focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+          >
+            <option value="all">All Orders</option>
+            <option value="new">New Orders</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+            {orders.filter(order => order.status === 'Pending').length} New Orders
+          </span>
+        </div>
+      </div>
       
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden p-10 w-full">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden p-6 w-full max-w-[1400px] mx-auto">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
+          <table className="w-full text-base">
+            <thead className="bg-amber-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-8 py-4 text-left text-sm font-medium text-amber-800 uppercase tracking-wider">
+                  Order ID
+                </th>
+                <th className="px-8 py-4 text-left text-sm font-medium text-amber-800 uppercase tracking-wider">
+                  Customer
+                </th>
+                <th className="px-8 py-4 text-left text-sm font-medium text-amber-800 uppercase tracking-wider">
+                  Items
+                </th>
+                <th className="px-8 py-4 text-left text-sm font-medium text-amber-800 uppercase tracking-wider">
+                  Total
+                </th>
+                <th className="px-8 py-4 text-left text-sm font-medium text-amber-800 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-8 py-4 text-left text-sm font-medium text-amber-800 uppercase tracking-wider">
+                  Time
+                </th>
+                <th className="px-8 py-4 text-left text-sm font-medium text-amber-800 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {orders.map(order => (
-                <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{order.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.customerName}</td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {order.items.map(item => `${item.name} (${item.quantity})`).join(', ')}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-amber-600">${order.total}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <select
-                      value={order.status}
-                      onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
-                      className={`px-3 py-1 text-xs font-medium rounded-full border-none focus:ring-2 focus:ring-amber-500 ${
-                        order.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                        order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                        order.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                        'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Cancelled">Cancelled</option>
-                    </select>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.time}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => handleViewOrderDetails(order)}
-                        className="bg-blue-600 hover:bg-blue-700 text-black p-2 rounded-lg transition-colors"
-                        title="View Details"
+            <tbody className="bg-white divide-y divide-amber-100">
+              {orders
+                .filter(order => {
+                  switch(orderFilter) {
+                    case 'new': return order.status === 'Pending';
+                    case 'in-progress': return order.status === 'In Progress';
+                    case 'completed': return order.status === 'Completed';
+                    case 'cancelled': return order.status === 'Cancelled';
+                    default: return true;
+                  }
+                })
+                .map(order => (
+                  <tr key={order.id} className="hover:bg-amber-50 transition-colors">
+                    <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-amber-900">
+                      #{order.id}
+                    </td>
+                    <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-900">{order.customerName}</td>
+                    <td className="px-8 py-4 text-sm text-gray-900">
+                      {order.items.map(item => `${item.name} (${item.quantity})`).join(', ')}
+                    </td>
+                    <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-amber-600">${order.total}</td>
+                    <td className="px-8 py-4 whitespace-nowrap">
+                      <select
+                        value={order.status}
+                        onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                        className={`px-3 py-1 text-xs font-medium rounded-full border-none focus:ring-2 focus:ring-amber-500 ${
+                          order.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                          order.status === 'Pending' ? 'bg-amber-100 text-amber-800' :
+                          order.status === 'In Progress' ? 'bg-amber-200 text-amber-800' :
+                          'bg-red-100 text-red-800'
+                        }`}
                       >
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      {order.status === 'Pending' && (
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </td>
+                    <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-500">{order.time}</td>
+                    <td className="px-8 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-2">
                         <button
-                          onClick={() => handleUpdateOrderStatus(order.id, 'In Progress')}
-                          className="bg-yellow-600 hover:bg-yellow-700 text-black p-2 rounded-lg transition-colors"
-                          title="Start Processing"
+                          onClick={() => handleViewOrderDetails(order)}
+                          className="bg-amber-100 hover:bg-amber-200 text-black p-2 rounded-lg transition-colors"
+                          title="View Details"
                         >
-                          <Clock className="h-4 w-4" />
+                          <Eye className="h-4 w-4" />
                         </button>
-                      )}
-                      {order.status === 'In Progress' && (
+
                         <button
-                          onClick={() => handleUpdateOrderStatus(order.id, 'Completed')}
-                          className="bg-green-600 hover:bg-green-700 text-black p-2 rounded-lg transition-colors"
-                          title="Mark Complete"
+                          onClick={() => handleDeleteOrder(order.id)}
+                          className="bg-amber-700 hover:bg-amber-800 text-black p-2 rounded-lg transition-colors"
+                          title="Delete Order"
                         >
-                          <CheckCircle className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
-                      )}
-                      {order.status !== 'Completed' && (
-                        <button
-                          onClick={() => handleUpdateOrderStatus(order.id, 'Cancelled')}
-                          className="bg-red-600 hover:bg-red-700 text-black p-2 rounded-lg transition-colors"
-                          title="Cancel Order"
-                        >
-                          <XCircle className="h-4 w-4" />
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleDeleteOrder(order.id)}
-                        className="bg-gray-600 hover:bg-gray-700 text-black p-2 rounded-lg transition-colors"
-                        title="Delete Order"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
+        {orders.filter(order => {
+          switch(orderFilter) {
+            case 'new': return order.status === 'Pending';
+            case 'in-progress': return order.status === 'In Progress';
+            case 'completed': return order.status === 'Completed';
+            case 'cancelled': return order.status === 'Cancelled';
+            default: return true;
+          }
+        }).length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No orders found for the selected filter
+          </div>
+        )}
       </div>
     </div>
   );
