@@ -41,8 +41,8 @@ function App() {
           <Route exact path="/cart" element={<CaffioAddToCart />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/login" element={<Admin />} />
+          <Route exact index element={<AdminDashboard />} />
+          <Route exact path="/admin/login" element={<Admin />} />
         </Route>
 
         {/* For admin */}
