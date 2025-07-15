@@ -12,8 +12,8 @@ import GallerySection from "./pages/gallery/Gallery";
 import ContactSection from "./pages/contact/Contact";
 import CaffioAddToCart from "./pages/cart/Cart";
 import Admin from "./pages/adminlogin/Admin"; 
-import AccountProfile from "./pages/AccountProfile/AccountProfile";
-import AccountSetting from "./pages/AccountSetting/AccountSetting";
+import AccountProfile from "./pages/accountProfile/AccountProfile";
+import AccountSetting from "./pages/accountSetting/AccountSetting";
 import AdminDashboard from "./pages/admindashboard/AdminDashboard";
 
 function App() {
