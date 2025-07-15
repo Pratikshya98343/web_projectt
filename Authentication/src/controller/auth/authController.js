@@ -5,7 +5,6 @@ import bcrypt from "bcrypt";
 const signup = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
-    //validation for regular users
     if (!firstName || !lastName || !email || !password)
       return res.status(500).send({ message: "All fields are required for user registration" });
 
@@ -15,7 +14,7 @@ const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user with required fields
+ 
     const user = await User.create({
       firstName,
       lastName,
@@ -46,7 +45,6 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    //fetching all the data from users table
     if (!email || !password) {
       return res.status(500).send({ message: "Credentials are required" });
     }
@@ -56,25 +54,37 @@ const login = async (req, res) => {
       return res.status(500).send({ message: "User not found" });
     }
 
+   
+    console.log("User found:", user.toJSON()); 
+    console.log("User role:", user.role);     
+   
+    if (user.role === 'admin') {
+      console.log("Attempted login by admin through user endpoint. Blocking.");
+      return res.status(403).send({ message: "Admin users cannot log in through this endpoint." });
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid)
+    if (!isPasswordValid) {
+      console.log("Invalid password for user:", user.email); 
       return res.status(401).send({ message: "Invalid credentials" });
+    }
 
     const token = generateToken({ user: user.toJSON() });
-    
+
     const userData = { ...user.toJSON() };
     delete userData.password;
 
+    console.log("User successfully logged in:", userData.email); 
     return res.status(200).send({
-      data: { 
+      data: {
         user: userData,
         access_token: token,
-        isAdmin: user.role === 'admin'
+        isAdmin: false 
       },
       message: "Successfully logged in",
     });
   } catch (e) {
-    console.log(e);
+    console.log("Error during login:", e); 
     res.status(500).json({ error: "Failed to login" });
   }
 };

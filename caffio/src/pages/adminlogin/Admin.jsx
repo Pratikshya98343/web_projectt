@@ -18,7 +18,7 @@ export default function AdminLogin() {
     const userRole = localStorage.getItem('userRole');
 
     if (token && userRole === 'admin') {
-      navigate('/admin-dashboard');
+      navigate('/admin');
     }
   }, [navigate]);
 
