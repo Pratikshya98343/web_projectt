@@ -6,8 +6,8 @@ import { authenticateToken } from "../../middleware/token-middleware.js";
 const router = express.Router();
 
 // Admin only routes
-router.get("/", authenticateToken, isAdmin, userController.getAll);
-router.post("/", authenticateToken, isAdmin, userController.create);
+router.get("/", userController.getAll);
+router.post("/", userController.create);
 router.put("/:id", authenticateToken, isAdmin, userController.update);
 router.delete("/:id", authenticateToken, isAdmin, userController.delelteById);
 

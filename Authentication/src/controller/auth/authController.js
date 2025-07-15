@@ -30,12 +30,10 @@ const signup = async (req, res) => {
     const userData = { ...user.toJSON() };
     delete userData.password;
 
-    const token = generateToken({ user: userData });
     
     res.status(201).send({ 
       data: { 
         user: userData, 
-        access_token: token
       }, 
       message: "Successfully created user" 
     });
@@ -131,6 +129,8 @@ const adminSignup = async (req, res) => {
     // Create admin user with only required fields
     const user = await User.create({
       email,
+      firstName: "Admin",
+      lastName: "Account",
       password: hashedPassword,
       role: 'admin'
     });

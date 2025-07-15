@@ -18,7 +18,7 @@ export default function AdminLogin() {
     const userRole = localStorage.getItem('userRole');
 
     if (token && userRole === 'admin') {
-      navigate('/admindashboard');
+      navigate('/admin-dashboard');
     }
   }, [navigate]);
 
@@ -44,7 +44,7 @@ export default function AdminLogin() {
       });
 
       console.log('Login response:', loginResponse.data);
-
+console.log('Login access token:', loginResponse.data?.data?.access_token);
       if (loginResponse.data?.data?.access_token) {
         const token = loginResponse.data.data.access_token;
         localStorage.setItem('token', token);
@@ -55,7 +55,7 @@ export default function AdminLogin() {
         try {
           const testResponse = await api.get('/users');
           console.log('Test response:', testResponse.data);
-          navigate('/admindashboard');
+          navigate('/admin-dashboard');
         } catch (testError) {
           console.error('Failed to access protected route:', testError?.response?.data || testError);
           setError(`Login successful but failed to access admin features: ${testError?.response?.data?.message || testError.message}`);
@@ -69,6 +69,8 @@ export default function AdminLogin() {
       setError(error.response?.data?.message || 'Failed to login. Please check your credentials.');
     }
   };
+
+  
 
   return (
     <div className="w-screen h-screen bg-gradient-to-br from-[#F5E6D3] via-[#DCC7B1] to-[#6F4E37] flex items-center justify-center relative overflow-hidden">

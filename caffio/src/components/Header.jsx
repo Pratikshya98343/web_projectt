@@ -31,9 +31,9 @@ const Header = () => {
 
   const handleUserIconClick = () => {
     if (isLoggedIn) {
-      setShowUserMenu(!showUserMenu); // Toggle menu visibility
+      setShowUserMenu(!showUserMenu); 
     } else {
-      navigate("/signin"); // Navigate to sign-in if not logged in
+      navigate("/signin"); 
     }
   };
 
@@ -134,21 +134,21 @@ const Header = () => {
           >
             <button
               onClick={handleAccountProfile}
-              className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-amber-900"
+              className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-amber-900"
             >
               Account
             </button>
 
             <button
               onClick={handleAccountSettings}
-              className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-amber-900"
+              className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-amber-900"
             >
               Settings
             </button>
 
             <button
               onClick={handleLogout}
-              className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-amber-900"
+              className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-amber-900"
             >
               Logout
             </button>
