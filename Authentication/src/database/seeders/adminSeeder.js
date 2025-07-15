@@ -7,23 +7,28 @@ export const seedAdmin = async () => {
     const existingAdmin = await User.findOne({
       where: {
         email: "admin@caffio.com",
-        role: "admin"
-      }
+        role: "admin",
+      },
     });
 
-    if (!existingAdmin) {
-      // Create default admin if it doesn't exist
-      const hashedPassword = await bcrypt.hash("admin123", 10);
-      await User.create({
-        firstName: "Admin",
-        lastName: "User",
-        email: "admin@caffio.com",
-        password: hashedPassword,
-        role: "admin"
-      });
-      console.log("Default admin account created");
+    if (existingAdmin) {
+      console.log("Admin account already exists, skipping creation.");
+      return;
     }
+    
+    // Create default admin if it doesn't exist
+    const hashedPassword = await bcrypt.hash("admin123", 10);
+    await User.create({
+      firstName: "Admin",
+      lastName: "User",
+      email: "admin@caffio.com",
+      password: hashedPassword,
+      role: "admin",
+    });
+    console.log("Default admin account created");
   } catch (error) {
     console.error("Error seeding admin:", error);
   }
 };
+
+seedAdmin();

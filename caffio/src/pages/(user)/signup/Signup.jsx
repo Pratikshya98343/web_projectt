@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/axios";
+import api from "../../../api/axios";
 
 const SignUp = () => {
   const navigate = useNavigate();
