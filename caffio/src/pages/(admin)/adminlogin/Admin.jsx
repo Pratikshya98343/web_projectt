@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Coffee, User, Lock, Eye, EyeOff } from 'lucide-react';
-import api from '../../api/axios';
+import api from '../../../api/axios';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function AdminLogin() {
     const userRole = localStorage.getItem('userRole');
 
     if (token && userRole === 'admin') {
-      navigate('/admin');
+      navigate('/admin/login');
     }
   }, [navigate]);
 
@@ -55,7 +55,7 @@ console.log('Login access token:', loginResponse.data?.data?.access_token);
         try {
           const testResponse = await api.get('/users');
           console.log('Test response:', testResponse.data);
-          navigate('/admin-dashboard');
+          navigate('/admin');
         } catch (testError) {
           console.error('Failed to access protected route:', testError?.response?.data || testError);
           setError(`Login successful but failed to access admin features: ${testError?.response?.data?.message || testError.message}`);

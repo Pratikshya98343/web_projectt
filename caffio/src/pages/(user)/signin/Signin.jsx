@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/axios";
+import api from "../../../api/axios";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -251,7 +251,7 @@ function SignIn() {
               </button>
             </p>
             <button
-              onClick={() => navigate("/adminlogin")}
+              onClick={() => navigate("/admin/login")}
               className="mt-4 inline-block font-medium text-[#8B5E3C] hover:text-[#6F4E37]"
             >
               Login as Admin
