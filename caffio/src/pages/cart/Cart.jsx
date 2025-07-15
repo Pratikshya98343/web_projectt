@@ -148,7 +148,7 @@ const CaffioAddToCart = () => {
       <div className="text-2xl font-bold text-orange-400 mb-6">
         ${product.price.toFixed(2)}
       </div>
-         {" "}
+-         {" "}
       <div className="flex items-center gap-4 mb-6">
              {" "}
         <button
