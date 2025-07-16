@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../../../redux/reducerSlice/CartSlice";
 
-const menuItems = [
+export const menuItems = [
   {
     id: 1,
     name: "Classic Espresso Single Shot Premium Blend",
@@ -359,6 +359,7 @@ export default function Menu() {
   const { isLogin } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
@@ -367,6 +368,17 @@ export default function Menu() {
     setSelectedItem(null);
   };
 
+  const handleAddToCart = (item) => {
+    if (isLogin) {
+      dispatch(addToCart(item.id));
+      navigate("/cart");
+    } else {
+      navigate("/signin");
+    }
+  };
+
+
+  
   // Detailed Item View
   if (selectedItem) {
     return (
@@ -544,12 +556,9 @@ export default function Menu() {
                 </div>
                 {/* Add to Cart Button */}
                 <button
-                  onClick={() => {
-                    if (isLogin) {
-                      dispatch(addToCart(item.id));
-                    } else {
-                      navigate("/signin");
-                    }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToCart(selectedItem);
                   }}
                   className="w-full bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-white py-4 rounded-full font-semibold tracking-wide uppercase text-lg shadow-lg hover:from-[#A0522D] hover:to-[#CD853F] hover:-translate-y-1 transition mb-6"
                 >
@@ -648,11 +657,7 @@ export default function Menu() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (isLogin) {
-                        dispatch(addToCart(item.id));
-                      } else {
-                        navigate("/signin");
-                      }
+                      handleAddToCart(item);
                     }}
                     className="flex-1 bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-white py-2 rounded-full font-semibold tracking-wide uppercase text-sm shadow-md hover:from-[#A0522D] hover:to-[#CD853F] hover:-translate-y-1 transition"
                   >

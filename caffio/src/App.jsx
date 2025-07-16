@@ -28,7 +28,7 @@ function App() {
           <Route exact path="/about" element={<About />} />
 
           <Route exact path="/menu" element={<Menu />} />
-
+          <Route exact path="/cart" element={<CartPage />} />
           <Route exact path="/product" element={<ProductSection />} />
 
           <Route exact path="/gallery" element={<GallerySection />} />
@@ -39,8 +39,6 @@ function App() {
           <Route exact path="/AccountProfile" element={<AccountProfile />} />
           <Route exact path="/account-settings" element={<AccountSetting />} />
           <Route exact path="/signup" element={<Signup />} />
-
-          <Route exact path="/cart" element={<CartPage/>} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route exact index element={<AdminDashboard />} />

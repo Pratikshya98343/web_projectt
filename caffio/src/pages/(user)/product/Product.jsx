@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../../../redux/reducerSlice/CartSlice";
 
-const products = [
+export const products = [
   {
     id: 1,
     name: "Ethiopian Yirgacheffe Beans - Floral & Citrusy",
@@ -197,7 +197,6 @@ const products = [
     },
   },
 ];
-
 
 export default function ProductSection() {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -561,7 +560,7 @@ export default function ProductSection() {
         />
       ))}
 
-      <style jsx>{`
+      <style>{`
         @keyframes float {
           from {
             transform: translateY(100vh) rotate(0deg);
