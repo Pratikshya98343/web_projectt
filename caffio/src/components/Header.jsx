@@ -1,17 +1,15 @@
-import React, { useState, useEffect, useRef } from "react"; 
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiShoppingCart, FiUser } from "react-icons/fi"; 
+import { FiShoppingCart, FiUser } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../redux/reducerSlice/UserSlice";
 
 const Header = () => {
+  const { isLogin } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const userMenuRef = useRef(null); 
-
-  useEffect(() => {
-    const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
-    setIsLoggedIn(loggedInStatus);
-  }, []);
+  const userMenuRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -30,29 +28,28 @@ const Header = () => {
   };
 
   const handleUserIconClick = () => {
-    if (isLoggedIn) {
-      setShowUserMenu(!showUserMenu); 
+    if (isLogin) {
+      setShowUserMenu(!showUserMenu);
     } else {
-      navigate("/signin"); 
+      navigate("/signin");
     }
   };
 
   const handleAccountProfile = () => {
-    setShowUserMenu(false); 
-    navigate("/accountProfile"); 
+    setShowUserMenu(false);
+    navigate("/accountProfile");
   };
 
   const handleAccountSettings = () => {
     setShowUserMenu(false);
-    navigate("/account-settings"); 
+    navigate("/account-settings");
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    setIsLoggedIn(false); 
+    dispatch(logoutUser());
     setShowUserMenu(false);
-    navigate("/"); 
-    window.location.reload(); 
+    navigate("/");
+    window.location.reload();
   };
 
   return (
@@ -69,50 +66,32 @@ const Header = () => {
 
       <ul className="flex space-x-6 font-medium">
         <li>
-          <Link
-            to="/"
-            className="nav-link inline-block px-2 py-1"
-          >
+          <Link to="/" className="nav-link inline-block px-2 py-1">
             Home
           </Link>
         </li>
         <li>
-          <Link
-            to="/about"
-            className="nav-link inline-block px-2 py-1"
-          >
+          <Link to="/about" className="nav-link inline-block px-2 py-1">
             About
           </Link>
         </li>
         <li>
-          <Link
-            to="/menu"
-            className="nav-link inline-block px-2 py-1"
-          >
+          <Link to="/menu" className="nav-link inline-block px-2 py-1">
             Menu
           </Link>
         </li>
         <li>
-          <Link
-            to="/product"
-            className="nav-link inline-block px-2 py-1"
-          >
+          <Link to="/product" className="nav-link inline-block px-2 py-1">
             Product
           </Link>
         </li>
         <li>
-          <Link
-            to="/gallery"
-            className="nav-link inline-block px-2 py-1"
-          >
+          <Link to="/gallery" className="nav-link inline-block px-2 py-1">
             Gallery
           </Link>
         </li>
         <li>
-          <Link
-            to="/contact"
-            className="nav-link inline-block px-2 py-1"
-          >
+          <Link to="/contact" className="nav-link inline-block px-2 py-1">
             Contact
           </Link>
         </li>
@@ -124,10 +103,10 @@ const Header = () => {
           onClick={handleUserIconClick}
         >
           <FiUser size={28} className="text-white" />
-          {isLoggedIn && <span className="text-sm text-white"></span>}
+          {isLogin && <span className="text-sm text-white"></span>}
         </div>
 
-        {showUserMenu && isLoggedIn && (
+        {showUserMenu && isLogin && (
           <div
             ref={userMenuRef}
             className="absolute top-full right-0 mt-2 w-48 bg-[#271001] rounded-md shadow-lg py-1 z-50"

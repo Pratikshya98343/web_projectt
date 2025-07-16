@@ -10,8 +10,11 @@ import {
   UserCircle,
   Shield,
 } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../redux/reducerSlice/UserSlice";
 
 const AdminHeader = () => {
+  const dispatch = useDispatch();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -30,7 +33,7 @@ const handleSettingsClick = () => {
 };
 
 const handleLogoutClick = () => {
-  localStorage.removeItem("authToken");
+  dispatch(logoutUser())
   navigate("/login");
 };
 

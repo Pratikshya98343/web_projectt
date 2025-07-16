@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/axios";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../../redux/reducerSlice/UserSlice";
 
 function SignIn() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -36,10 +39,11 @@ function SignIn() {
     const { rememberMe, ...userData } = data;
 
     try {
-      const response = await api.post("/auth/login", userData);
-
-      if (response.status === 200) {
-        localStorage.setItem("isLoggedIn", "true");
+      const { data, status } = await api.post("/auth/login", userData);
+      if (status === 200) {
+        dispatch(
+          loginUser({ user: data.data.user, token: data.data.access_token })
+        );
         navigate("/");
         return;
       }
@@ -65,7 +69,6 @@ function SignIn() {
       type="button"
       onClick={togglePasswordVisibility}
       className="absolute inset-y-0 right-0 pr-3 flex items-center"
-     
     >
       <svg
         fill="none"
