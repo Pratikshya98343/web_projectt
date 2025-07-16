@@ -14,6 +14,8 @@ import AccountSetting from "./pages/(user)/accountSetting/AccountSetting";
 import AdminDashboard from "./pages/(admin)/admindashboard/AdminDashboard";
 import MainLayout from "./layouts/MainLayout";
 import AdminLayout from "./layouts/AdminLayout";
+import AdminProfile from "./pages/(admin)/adminprofile/AdminProfile";
+import AdminSettings from "./pages/(admin)/adminsetting/AdminSetting";
 
 function App() {
   return (
@@ -43,6 +45,8 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route exact index element={<AdminDashboard />} />
           <Route exact path="/admin/login" element={<Admin />} />
+          <Route exact path="/admin/AdminProfile" element={<AdminProfile />} />
+          <Route exact path="/admin/settings" element={<AdminSettings />} />
         </Route>
 
         {/* For admin */}

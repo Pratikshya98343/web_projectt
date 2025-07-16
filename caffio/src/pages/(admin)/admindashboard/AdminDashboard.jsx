@@ -4,7 +4,6 @@ import {
   ShoppingCart, 
   Menu, 
   BarChart3, 
-  LogOut, 
   Plus, 
   Edit, 
   Trash2, 
@@ -13,9 +12,7 @@ import {
   TrendingUp,
   Package,
   Eye,
-  Clock,
-  CheckCircle,
-  XCircle
+ 
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -287,132 +284,118 @@ const AdminDashboard = () => {
             <ShoppingCart className="h-5 w-5" />
             <span>Orders</span>
           </button>
-          
-          <button
-            onClick={() => alert('Logging out...')}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-red-600 transition-colors text-black-200"
-          >
-            <LogOut className="h-5 w-5" />
-            <span>Logout</span>
-          </button>
+
         </nav>
       </div>
     </div>
   );
 
-  const DashboardContent = () => (
-    <div className="space-y-4 px-20 py-20"> {/* Changed py-40 to py-20 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 px-20 py-10"> {/* Changed py-30 to py-10 */}
-        {/* Stats Cards with enhanced design */}
-        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-amber-500 hover:shadow-xl transition-all duration-300">
-          <div className="flex items-center">
-            <div className="bg-amber-100 p-3 rounded-full">
-              <DollarSign className="h-6 w-6 text-amber-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-              <p className="text-2xl font-bold text-gray-800">$2,847</p>
-              <p className="text-xs text-green-500">+12% from last month</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all duration-300">
-          <div className="flex items-center">
-            <div className="bg-green-100 p-3 rounded-full">
-              <ShoppingCart className="h-6 w-6 text-green-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Orders</p>
-              <p className="text-2xl font-bold text-gray-800">{orders.length}</p>
-              <p className="text-xs text-green-500">+5% from last week</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all duration-300">
-          <div className="flex items-center">
-            <div className="bg-blue-100 p-3 rounded-full">
-              <Users className="h-6 w-6 text-blue-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Customers</p>
-              <p className="text-2xl font-bold text-gray-800">156</p>
-              <p className="text-xs text-green-500">+8% new users</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all duration-300">
-          <div className="flex items-center">
-            <div className="bg-purple-100 p-3 rounded-full">
-              <TrendingUp className="h-6 w-6 text-purple-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Growth</p>
-              <p className="text-2xl font-bold text-gray-800">+12%</p>
-              <p className="text-xs text-green-500">+3% from last month</p>
-            </div>
-          </div>
-        </div>
+const DashboardContent = () => (
+  <div className="flex flex-col md:flex-row space-y-6 md:space-y-0">
+    {/* Main Content */}
+    <div className="flex-grow-5  w-screen  h-90  md:p-6 bg-gray-100">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Total Revenue" value="$2,847" change="+12% from last month" color="orange" />
+        <StatCard title="Total Orders" value={orders.length} change="+5% from last week" color="green" />
+        <StatCard title="Customers" value="156" change="+8% new users" color="blue" />
+        <StatCard title="Growth" value="+12%" change="+3% from last month" color="purple" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Orders Card with enhanced design */}
-        <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-semibold text-gray-800">Recent Orders</h3>
-            <button className="text-amber-600 hover:text-amber-700 text-sm font-medium">View All</button>
+      {/* Recent Orders & Top Products */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {/* Recent Orders */}
+        <div className="bg-white rounded-lg shadow-md p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">Recent Orders</h3>
+            <button className="text-sm font-medium text-orange-600 hover:text-orange-800">View All</button>
           </div>
-          <div className="space-y-4">
-            {orders.slice(0, 3).map(order => (
-              <div key={order.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-amber-100 p-2 rounded-full">
-                    <ShoppingCart className="h-4 w-4 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800">{order.customerName}</p>
-                    <p className="text-sm text-gray-600">{order.items.map(item => item.name).join(', ')}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-amber-600">${order.total}</p>
-                  <p className="text-xs text-gray-500">{order.time}</p>
-                </div>
-              </div>
+          <div>
+            {orders.slice(0, 3).map((order) => (
+              <OrderItem
+                key={order.id}
+                customerName={order.customerName}
+                items={order.items.map((item) => item.name).join(", ")}
+                total={order.total}
+                time={order.time}
+              />
             ))}
           </div>
         </div>
 
-        {/* Top Products Card with enhanced design */}
-        <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-semibold text-gray-800">Top Products</h3>
-            <button className="text-amber-600 hover:text-amber-700 text-sm font-medium">View All</button>
+        {/* Top Products */}
+        <div className="bg-white rounded-lg shadow-md p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">Top Products</h3>
+            <button className="text-sm font-medium text-orange-600 hover:text-orange-800">View All</button>
           </div>
-          <div className="space-y-4">
-            {products.slice(0, 3).map(product => (
-              <div key={product.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className="flex items-center space-x-4">
-                  <img src={product.image} alt={product.name} className="w-12 h-12 rounded-lg object-cover ring-2 ring-gray-200" />
-                  <div>
-                    <p className="font-medium text-gray-800">{product.name}</p>
-                    <p className="text-sm text-gray-600">{product.category}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-amber-600">${product.price}</p>
-                  <p className="text-xs text-gray-500">Stock: {product.stock}</p>
-                </div>
-              </div>
+          <div>
+            {products.slice(0, 3).map((product) => (
+              <ProductItem
+                key={product.id}
+                name={product.name}
+                category={product.category}
+                price={product.price}
+                stock={product.stock}
+                image={product.image}
+              />
             ))}
           </div>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 
+// Stat Card Component
+const StatCard = ({ title, value, change, color }) => (
+  <div className={`bg-white rounded-lg shadow-md p-4 flex items-center space-x-4`}>
+    <div className={`w-8 h-8 rounded-full bg-${color}-100 flex items-center justify-center`}>
+      <span className={`text-${color}-600`}>$</span> {/* Replace with icon */}
+    </div>
+    <div>
+      <p className="text-sm font-medium">{title}</p>
+      <p className="text-xl font-bold">{value}</p>
+      <p className="text-xs text-green-600">{change}</p>
+    </div>
+  </div>
+);
+
+// Order Item Component
+const OrderItem = ({ customerName, items, total, time }) => (
+  <div className="flex justify-between items-center p-2 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors">
+    <div className="flex items-center space-x-2">
+      <div className="bg-orange-100 p-1 rounded-full">
+        <ShoppingCart className="h-4 w-4 text-orange-600" />
+      </div>
+      <div>
+        <p className="font-medium text-gray-800">{customerName}</p>
+        <p className="text-sm text-gray-600 truncate max-w-[150px]">{items}</p>
+      </div>
+    </div>
+    <div className="text-right">
+      <p className="font-bold text-orange-600">${total}</p>
+      <p className="text-xs text-gray-500">{time}</p>
+    </div>
+  </div>
+);
+
+// Product Item Component
+const ProductItem = ({ name, category, price, stock, image }) => (
+  <div className="flex justify-between items-center p-2 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors">
+    <div className="flex items-center space-x-4">
+      <img src={image} alt={name} className="w-12 h-12 rounded object-cover ring-1 ring-gray-200" />
+      <div>
+        <p className="font-medium text-gray-800">{name}</p>
+        <p className="text-sm text-gray-600">{category}</p>
+      </div>
+    </div>
+    <div className="text-right">
+      <p className="font-bold text-orange-600">${price}</p>
+      <p className="text-xs text-gray-500">Stock: {stock}</p>
+    </div>
+  </div>
+);
 
   const ProductsContent = () => (
     <div className="space-y-10 px-20 py-40">  {/* Updated padding */}
