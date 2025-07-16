@@ -102,8 +102,11 @@ const Header = () => {
           className="flex items-center space-x-1 transition-colors cursor-pointer text-white hover:text-gray-200"
           onClick={handleUserIconClick}
         >
-          <FiUser size={28} className="text-white" />
-          {isLogin && <span className="text-sm text-white"></span>}
+          {isLogin ? (
+            <FiUser size={28} className="text-white" />
+          ) : (
+            <button>Login</button>
+          )}
         </div>
 
         {showUserMenu && isLogin && (
@@ -134,12 +137,14 @@ const Header = () => {
           </div>
         )}
 
-        <Link
-          to="/cart"
-          className="flex items-center space-x-1 transition-colors text-white hover:text-gray-200"
-        >
-          <FiShoppingCart size={28} className="ml-4 text-white" />
-        </Link>
+        {isLogin && (
+          <Link
+            to="/cart"
+            className="flex items-center space-x-1 transition-colors text-white hover:text-gray-200"
+          >
+            <FiShoppingCart size={28} className="ml-4 text-white" />
+          </Link>
+        )}
       </div>
     </nav>
   );
