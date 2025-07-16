@@ -1,5 +1,4 @@
 import React from 'react';
-
 export default function About() {
   return (
     <section id="About" className="relative min-h-screen bg-gradient-to-br from-[#2C1810] via-[#8B4513] to-[#D2691E] text-white overflow-hidden pt-24">

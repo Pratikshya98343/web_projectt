@@ -7,7 +7,7 @@ import Menu from "./pages/(user)/menu/Menu";
 import ProductSection from "./pages/(user)/product/Product";
 import GallerySection from "./pages/(user)/gallery/Gallery";
 import ContactSection from "./pages/(user)/contact/Contact";
-import CaffioAddToCart from "./pages/(user)/cart/Cart";
+import CartPage from "./pages/(user)/cart/Cart";
 import Admin from "./pages/(admin)/adminlogin/Admin";
 import AccountProfile from "./pages/(user)/accountProfile/AccountProfile";
 import AccountSetting from "./pages/(user)/accountSetting/AccountSetting";
@@ -40,7 +40,7 @@ function App() {
           <Route exact path="/account-settings" element={<AccountSetting />} />
           <Route exact path="/signup" element={<Signup />} />
 
-          <Route exact path="/cart" element={<CaffioAddToCart />} />
+          <Route exact path="/cart" element={<CartPage/>} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route exact index element={<AdminDashboard />} />

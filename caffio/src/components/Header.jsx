@@ -99,7 +99,7 @@ const Header = () => {
 
       <div className="flex space-x-6 pr-4 relative">
         <div
-          className="flex items-center space-x-1 transition-colors cursor-pointer text-white hover:text-gray-200"
+          className="flex items-center space-x-1 transition-colors cursor-pointer text-black hover:text-gray-200"
           onClick={handleUserIconClick}
         >
           {isLogin ? (

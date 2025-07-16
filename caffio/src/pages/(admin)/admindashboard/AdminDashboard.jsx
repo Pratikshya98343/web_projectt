@@ -463,7 +463,7 @@ const ProductItem = ({ name, category, price, stock, image }) => (
   );
 
   const MenuContent = () => (
-    <div className="space-y-6 px-20 py-40">  {/* Already correct padding */}
+    <div className="space-y-6 px-20 py-40"> 
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Menu Management</h2>
         <button
