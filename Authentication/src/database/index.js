@@ -1,5 +1,5 @@
 import { sequelize } from '../config/database.js';
-import { User } from '../models/user/User.js';
+// import { User } from '../models/user/User.js';
 // import { seedAdmin } from './seeders/adminSeeder.js';
 
 export const db = async () => {
