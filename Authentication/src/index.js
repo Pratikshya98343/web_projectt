@@ -4,6 +4,7 @@ import cors from "cors";
 import { db } from "./database/index.js";
 import { userRouter } from "./route/index.js";
 import { authRouter } from "./route/index.js";
+import { categoryRouter } from "./route/index.js";
 import dotenv from "dotenv";
 import router from "./route/uploadRoutes.js";
 import { createUploadsFolder } from "./security/helper.js";
@@ -19,6 +20,7 @@ app.use(cors());
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/file", router);
+app.use("/api/category", categoryRouter);
 
 createUploadsFolder();
 
