@@ -15,6 +15,13 @@ const addCategory = async (req, res) => {
       return res.status(400).json({ error: "Category name is required" });
     }
 
+    const existingCategory = await Category.findOne({
+      where: { name },
+    });
+    if (existingCategory) {
+      return res.status(400).json({ error: "Category already exists" });
+    }
+
     // Create the new category
     const newCategory = await Category.create({ name });
 

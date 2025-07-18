@@ -7,14 +7,14 @@ const router = express.Router();
 
 router.post(
   "/",
-  authenticateToken,
+//   authenticateToken,
   upload.single("image"),
   productController.addProduct
 );
 router.get("/", productController.getAllProducts);
 router.get("/by_category", productController.getProductByCategory);
 router.get("/:id", productController.getProductById);
-router.delete("/:id", authenticateToken, productController.deleteProduct);
+router.delete("/:id", productController.deleteProduct);
 router.patch(
   "/:id",
   authenticateToken,

@@ -1,6 +1,7 @@
 import { Coffee } from "../../models/product/Product.js";
 import fs from "fs";
 import path from "path";
+import { Category } from "../../models/index.js";
 
 /**
  * add new product
@@ -35,23 +36,36 @@ const addProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Coffee.findAll();
+    const products = await Coffee.findAll({
+      include: [{
+        model: Category,
+        as: "category",
+        attributes: ["id", "name"]
+      }]
+    });
+    
     if (!products || products.length === 0) {
       return res.status(404).json({ message: "No products found" });
     }
+    
     const formattedProducts = products.map((product) => {
+      const productJson = product.toJSON();
       return {
-        ...product,
-        image: product.image
-          ? `${process.env.SERVER_URL}/${product.image}`
+        ...productJson,
+        image: productJson.image
+          ? `${process.env.SERVER_URL}/${productJson.image}`
           : null,
       };
     });
+    
     res.status(200).json({
       data: formattedProducts,
       message: "Products fetched successfully",
     });
-  } catch (err) {}
+  } catch (err) {
+    console.error("Error fetching products", err);
+    res.status(500).json({ error: `Failed to fetch products: ${err.message}` });
+  }
 };
 
 /**
@@ -64,22 +78,33 @@ const getProductByCategory = async (req, res) => {
     if (!category) {
       return res.status(400).json({ error: "Category is required" });
     }
+    
+    
     const products = await Coffee.findAll({
-      where: { category },
+      where: { categoryId: category },
+      include: [{
+        model: Category,
+        as: "category",
+        attributes: ["id", "name"]
+      }]
     });
+    
     if (!products || products.length === 0) {
       return res
         .status(404)
         .json({ message: "No products found in this category" });
     }
+    
     const formattedProducts = products.map((product) => {
+      const productJson = product.toJSON();
       return {
-        ...product,
-        image: product.image
-          ? `${process.env.SERVER_URL}/${product.image}`
+        ...productJson,
+        image: productJson.image
+          ? `${process.env.SERVER_URL}/${productJson.image}`
           : null,
       };
     });
+    
     res.status(200).json({
       data: formattedProducts,
       message: "Products by category fetched successfully",
@@ -97,16 +122,26 @@ const getProductByCategory = async (req, res) => {
 const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Coffee.findByPk(id);
+    const product = await Coffee.findByPk(id, {
+      include: [{
+        model: Category,
+        as: "category",
+        attributes: ["id", "name"]
+      }]
+    });
+    
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
+    
+    const productJson = product.toJSON();
     const formattedProduct = {
-      ...product,
-      image: product.image
-        ? `${process.env.SERVER_URL}/${product.image}`
+      ...productJson,
+      image: productJson.image
+        ? `${process.env.SERVER_URL}/${productJson.image}`
         : null,
     };
+    
     res.status(200).json({
       data: formattedProduct,
       message: "Product fetched successfully",
@@ -128,18 +163,18 @@ const deleteProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
-    
+
     // Delete the image file if it exists
     if (product.image) {
-      const imagePath = path.join('uploads', product.image);
-      
+      const imagePath = path.join("uploads", product.image);
+
       // Check if file exists before attempting to delete
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
         console.log(`Deleted image file: ${imagePath}`);
       }
     }
-    
+
     await product.destroy();
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (err) {
