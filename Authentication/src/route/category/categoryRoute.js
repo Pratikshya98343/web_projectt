@@ -4,7 +4,6 @@ import { authenticateToken } from "../../middleware/token-middleware.js";
 
 const router = express.Router();
 
-// Admin only routes
 router.post("/", authenticateToken, categoryController.addCategory);
 router.get("/", categoryController.getAllCategories);
 router.get("/:id", categoryController.getCategoryById);
