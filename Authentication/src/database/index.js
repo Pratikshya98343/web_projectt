@@ -1,5 +1,5 @@
 import { sequelize } from '../config/database.js';
-// import { User } from '../models/user/User.js';
+import '../models/associations.js';
 // import { seedAdmin } from './seeders/adminSeeder.js';
 
 export const db = async () => {
@@ -11,6 +11,6 @@ export const db = async () => {
     // await seedAdmin();
 
   } catch (e) {
-    console.error("fail to connect database successfully",)
+    console.error("fail to connect database successfully", e)
   }
 }

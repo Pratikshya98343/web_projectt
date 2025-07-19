@@ -69,14 +69,3 @@ export const Coffee = sequelize.define(
     timestamps: true,
   }
 );
-
-// Define associations
-Coffee.belongsTo(Category, {
-  foreignKey: "categoryId", // The foreign key in CoffeeDessert
-  as: "category", // Alias for the association
-});
-
-Category.hasMany(Coffee, {
-  foreignKey: "categoryId",
-  as: "desserts", // Alias for the association
-});
