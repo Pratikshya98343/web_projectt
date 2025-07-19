@@ -6,6 +6,7 @@ import { userRouter } from "./route/index.js";
 import { authRouter } from "./route/index.js";
 import { categoryRouter } from "./route/index.js";
 import { productRouter } from "./route/index.js";
+import { orderRouter } from "./route/index.js";
 import dotenv from "dotenv";
 import router from "./route/uploadRoutes.js";
 import { createUploadsFolder } from "./security/helper.js";
@@ -24,6 +25,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/file", router);
 app.use("/api/category", categoryRouter);
 app.use("/api/product", productRouter);
+app.use("/api/orders", orderRouter);
 
 createUploadsFolder();
 
