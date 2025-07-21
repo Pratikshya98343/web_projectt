@@ -11,11 +11,14 @@ import CartPage from "./pages/(user)/cart/Cart";
 import Admin from "./pages/(admin)/adminlogin/Admin";
 import AccountProfile from "./pages/(user)/accountProfile/AccountProfile";
 import AccountSetting from "./pages/(user)/accountSetting/AccountSetting";
-import AdminDashboard from "./pages/(admin)/admindashboard/AdminDashboard";
+import AdminDashboardPage from "./pages/(admin)/admindashboard/AdminDashboardPage";
 import MainLayout from "./layouts/MainLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminProfile from "./pages/(admin)/adminprofile/AdminProfile";
 import AdminSettings from "./pages/(admin)/adminsetting/AdminSetting";
+import AdminCategoriesPage from "./pages/(admin)/categories/AdminCategoriesPage";
+import AdminMenuPage from "./pages/(admin)/menu/AdminMenuPage";
+import AdminOrdersPage from "./pages/(admin)/orders/AdminOrdersPage";
 
 function App() {
   return (
@@ -41,8 +44,15 @@ function App() {
           <Route exact path="/signup" element={<Signup />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
-          <Route exact index element={<AdminDashboard />} />
+          <Route exact index element={<AdminDashboardPage />} />
           <Route exact path="/admin/login" element={<Admin />} />
+          <Route
+            exact
+            path="/admin/categories"
+            element={<AdminCategoriesPage />}
+          />
+          <Route exact path="/admin/menu" element={<AdminMenuPage />} />
+          <Route exact path="/admin/orders" element={<AdminOrdersPage />} />
           <Route exact path="/admin/AdminProfile" element={<AdminProfile />} />
           <Route exact path="/admin/settings" element={<AdminSettings />} />
         </Route>
