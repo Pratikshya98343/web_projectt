@@ -46,22 +46,25 @@ const addCategory = async (req, res) => {
 
 const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.findAll();
+    const categories = await Category.findAll({ raw: true });
     if (!categories || categories.length === 0) {
       return res.status(404).json({ message: "No categories found" });
     }
 
-    const formattedCategories = categories.map(async (category) => {
-      const productsCount = await Coffee.count({
-        where: {
-          categoryId: category.id,
-        },
-      });
-      return {
-        ...category,
-        productsCount,
-      };
-    });
+    const formattedCategories = await Promise.all(
+      categories.map(async (category) => {
+        const productsCount = await Coffee.count({
+          where: {
+            categoryId: category.id,
+          },
+        });
+
+        return {
+          ...category,
+          productsCount: productsCount || 0, // Default to 0 if no products found
+        };
+      })
+    );
 
     res.status(200).json({
       data: formattedCategories,

@@ -1,65 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, Edit, Trash2, Tag } from "lucide-react";
+import { Modal } from "../../../components/Modal";
+import api from "../../../api/axios";
 
 const AdminCategoriesPage = () => {
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // Sample data for categories
-  const [categories, setCategories] = useState([
-    {
-      id: 1,
-      name: "Coffee",
-      description: "Various coffee products",
-      productsCount: 12,
-      image: "./image/category1.png",
-      color: "#7C4A35",
-    },
-    {
-      id: 2,
-      name: "Pastry",
-      description: "Fresh baked goods",
-      productsCount: 8,
-      image: "./image/category2.png",
-      color: "#D4A373",
-    },
-    {
-      id: 3,
-      name: "Tea",
-      description: "Variety of teas",
-      productsCount: 6,
-      image: "./image/category3.png",
-      color: "#588157",
-    },
-  ]);
+  const [categories, setCategories] = useState([]);
 
   const [newCategory, setNewCategory] = useState({
     name: "",
     description: "",
-    image: "",
-    color: "#000000",
   });
 
-  const handleAddCategory = () => {
-    if (newCategory.name && newCategory.description) {
-      const category = {
-        id: categories.length + 1,
-        ...newCategory,
-        productsCount: 0,
-      };
-      setCategories([...categories, category]);
+  const handleAddCategory = async () => {
+    try {
+      await api.post("/category", newCategory);
+    } catch (err) {
+      console.error("Error adding category:", err);
+    } finally {
+      fetchCategories();
+      setShowAddCategoryModal(false);
       setNewCategory({
         name: "",
         description: "",
-        image: "",
-        color: "#000000",
       });
-      setShowAddCategoryModal(false);
     }
   };
 
-  const handleDeleteCategory = (id) => {
-    setCategories(categories.filter((c) => c.id !== id));
+  const handleDeleteCategory = async (id) => {
+    try {
+      const deleteCategory = confirm(
+        "Are you sure you want to delete this category?"
+      );
+      if (!deleteCategory) return;
+      await api.delete(`/category/${id}`);
+    } catch (err) {
+      console.error("Error deleting category:", err);
+    } finally {
+      fetchCategories();
+    }
   };
 
   const handleEditCategory = (category) => {
@@ -68,38 +51,40 @@ const AdminCategoriesPage = () => {
     setShowAddCategoryModal(true);
   };
 
-  const handleUpdateCategory = () => {
-    setCategories(
-      categories.map((c) =>
-        c.id === editingCategory.id ? { ...editingCategory, ...newCategory } : c
-      )
-    );
-    setEditingCategory(null);
-    setNewCategory({ name: "", description: "", image: "", color: "#000000" });
-    setShowAddCategoryModal(false);
+  const handleUpdateCategory = async () => {
+    try {
+      await api.patch(`/category/${editingCategory.id}`, newCategory);
+    } catch (err) {
+      console.error("Error updating category:", err);
+    } finally {
+      fetchCategories();
+      setEditingCategory(null);
+      setShowAddCategoryModal(false);
+      setNewCategory({
+        name: "",
+        description: "",
+      });
+    }
   };
 
-  // Modal Component
-  const Modal = ({ isOpen, onClose, title, children }) => {
-    if (!isOpen) return null;
-
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">{title}</h3>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-xl"
-            >
-              ×
-            </button>
-          </div>
-          {children}
-        </div>
-      </div>
-    );
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const { data, status } = await api.get("/category");
+      if (status === 200) {
+        setCategories(data?.data);
+      }
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+      setCategories([]);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   return (
     <div className="p-8">
@@ -124,58 +109,65 @@ const AdminCategoriesPage = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-2 py-12">
-            {categories.map((category) => (
-              <div
-                key={category.id}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-              >
-                <div className="relative">
+          {!loading ? (
+            categories?.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-2 py-12">
+                {categories?.map((category) => (
                   <div
-                    className="w-full h-32 flex items-center justify-center"
-                    style={{ backgroundColor: category.color }}
+                    key={category.id}
+                    className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
                   >
-                    {category.image ? (
-                      <img
-                        src={category.image}
-                        alt={category.name}
-                        className="h-20 object-contain"
-                      />
-                    ) : (
-                      <Tag className="h-16 w-16 text-white opacity-60" />
-                    )}
+                    <div className="relative">
+                      <div
+                        className="w-full h-32 flex items-center justify-center"
+                        // style={{ backgroundColor: category.color }}
+                      >
+                        <img
+                          src="/image/about.png"
+                          className="h-44 object-cover w-full"
+                        />
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold mb-2 text-gray-800">
+                        {category.name}
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        {category.description}
+                      </p>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-sm font-medium text-gray-500">
+                          {category.productsCount} Products
+                        </span>
+                      </div>
+                      <div className="flex space-x-3">
+                        <button
+                          onClick={() => handleEditCategory(category)}
+                          className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors border border-blue-200"
+                        >
+                          <Edit className="h-4 w-4" />
+                          <span className="font-medium">Edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteCategory(category.id)}
+                          className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors border border-red-200"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          <span className="font-medium">Delete</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2 text-gray-800">
-                    {category.name}
-                  </h3>
-                  <p className="text-gray-600 mb-4">{category.description}</p>
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-sm font-medium text-gray-500">
-                      {category.productsCount} Products
-                    </span>
-                  </div>
-                  <div className="flex space-x-3">
-                    <button
-                      onClick={() => handleEditCategory(category)}
-                      className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors border border-blue-200"
-                    >
-                      <Edit className="h-4 w-4" />
-                      <span className="font-medium">Edit</span>
-                    </button>
-                    <button
-                      onClick={() => handleDeleteCategory(category.id)}
-                      className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 py-2 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors border border-red-200"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="font-medium">Delete</span>
-                    </button>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            ) : (
+              <div className="w-full text-center text-lg">
+                No categories found
+              </div>
+            )
+          ) : (
+            <div className="w-full text-center text-lg">Loading...</div>
+          )}
         </div>
       </div>
 
@@ -188,8 +180,6 @@ const AdminCategoriesPage = () => {
           setNewCategory({
             name: "",
             description: "",
-            image: "",
-            color: "#000000",
           });
         }}
         title={editingCategory ? "Edit Category" : "Add New Category"}
@@ -213,29 +203,10 @@ const AdminCategoriesPage = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
             rows="3"
           />
-          <input
-            type="url"
-            placeholder="Image URL (optional)"
-            value={newCategory.image}
-            onChange={(e) =>
-              setNewCategory({ ...newCategory, image: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-          />
-          <div className="flex space-x-2 items-center">
-            <label className="text-sm text-gray-700">Color:</label>
-            <input
-              type="color"
-              value={newCategory.color}
-              onChange={(e) =>
-                setNewCategory({ ...newCategory, color: e.target.value })
-              }
-              className="h-8 w-8 border-0 p-0 rounded"
-            />
-          </div>
+
           <button
             onClick={editingCategory ? handleUpdateCategory : handleAddCategory}
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-lg transition-colors"
+            className="w-full bg-amber-600 hover:bg-amber-700 text-black py-2 px-4 rounded-lg transition-colors"
           >
             {editingCategory ? "Update Category" : "Add Category"}
           </button>

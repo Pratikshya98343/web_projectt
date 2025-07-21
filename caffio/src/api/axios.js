@@ -12,7 +12,7 @@ api.interceptors.request.use((config) => {
   // Update the Authorization header with the latest access token on each request
   const { user } = store.getState();
   if (user.token) {
-    config.headers.Authorization = `Bearer ${auth?.user}`;
+    config.headers.Authorization = `Bearer ${user?.token}`;
   }
   return config;
 });
