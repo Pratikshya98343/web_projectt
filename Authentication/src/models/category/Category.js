@@ -14,6 +14,10 @@ export const Category = sequelize.define(
       allowNull: false,
       unique: true, // Ensure categories are unique
     },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true, // Description is optional
+    },
   },
   {
     sequelize,

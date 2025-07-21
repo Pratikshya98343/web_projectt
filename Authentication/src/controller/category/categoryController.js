@@ -1,4 +1,5 @@
 import { Category } from "../../models/category/Category.js";
+import { Coffee } from "../../models/index.js";
 
 /**
  * add new category
@@ -8,11 +9,13 @@ import { Category } from "../../models/category/Category.js";
 
 const addCategory = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, description } = req.body;
 
     // Validate the input
-    if (!name) {
-      return res.status(400).json({ error: "Category name is required" });
+    if (!name || !description) {
+      return res
+        .status(400)
+        .json({ error: "Category name & description is required" });
     }
 
     const existingCategory = await Category.findOne({
@@ -23,7 +26,7 @@ const addCategory = async (req, res) => {
     }
 
     // Create the new category
-    const newCategory = await Category.create({ name });
+    const newCategory = await Category.create({ name, description });
 
     res.status(201).json({
       data: newCategory,
@@ -44,9 +47,26 @@ const addCategory = async (req, res) => {
 const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.findAll();
-    res
-      .status(200)
-      .json({ data: categories, message: "Categories fetched successfully" });
+    if (!categories || categories.length === 0) {
+      return res.status(404).json({ message: "No categories found" });
+    }
+
+    const formattedCategories = categories.map(async (category) => {
+      const productsCount = await Coffee.count({
+        where: {
+          categoryId: category.id,
+        },
+      });
+      return {
+        ...category,
+        productsCount,
+      };
+    });
+
+    res.status(200).json({
+      data: formattedCategories,
+      message: "Categories fetched successfully",
+    });
   } catch (error) {
     console.error("Error fetching categories:", error);
     res.status(500).json({ error: "Failed to fetch categories" });
@@ -104,11 +124,13 @@ const deleteCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, description } = req.body;
 
     // Validate the input
-    if (!name) {
-      return res.status(400).json({ error: "Category name is required" });
+    if (!name || !description) {
+      return res
+        .status(400)
+        .json({ error: "Category name & description is required" });
     }
 
     // Find the category by ID
@@ -119,6 +141,7 @@ const updateCategory = async (req, res) => {
 
     // Update the category
     category.name = name;
+    category.description = description;
     await category.save();
 
     res
