@@ -12,16 +12,16 @@ export const Category = sequelize.define(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true, // Ensure categories are unique
+      unique: true, 
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true, // Description is optional
+      allowNull: true, 
     },
   },
   {
     sequelize,
     modelName: "Category",
-    timestamps: true, // Optional: No timestamps needed for categories
+    timestamps: true, 
   }
 );

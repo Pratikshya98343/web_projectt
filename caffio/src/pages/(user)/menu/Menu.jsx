@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../../../redux/reducerSlice/CartSlice";
 
+
 export const menuItems = [
   {
     id: 1,

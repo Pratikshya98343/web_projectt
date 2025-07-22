@@ -1,7 +1,7 @@
 import React from 'react';
 export default function About() {
   return (
-    <section id="About" className="relative min-h-screen bg-gradient-to-br from-[#2C1810] via-[#8B4513] to-[#D2691E] text-white overflow-hidden pt-24">
+    <section id="About" className="relative min-h-screen  w-screen bg-gradient-to-br from-[#2C1810] via-[#8B4513] to-[#D2691E] text-white overflow-hidden pt-24">
    
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-32 h-32 bg-white rounded-full blur-3xl animate-pulse"></div>
