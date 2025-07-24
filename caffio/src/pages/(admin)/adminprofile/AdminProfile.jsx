@@ -17,8 +17,8 @@ import {
 const AdminProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    name: "Pratikshya Shrestha",
-    email: "Pratikshyashrestha94.com",
+    name: "admin",
+    email: "admin@gmail.com",
     phone: "9876543210",
     profileImage: null,
   });

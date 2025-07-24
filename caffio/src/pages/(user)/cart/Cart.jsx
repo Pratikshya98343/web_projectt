@@ -203,7 +203,8 @@ export default function CartPage() {
                 </div>
                 <div className="space-y-3">
                   <button
-                    onClick={() => alert('Proceeding to checkout')}
+                   onClick={() => navigate("/checkout")}
+
                     className="w-full bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-white py-3 rounded-full font-semibold hover:from-[#A0522D] hover:to-[#CD853F] transition transform hover:scale-105"
                   >
                     Proceed to Checkout

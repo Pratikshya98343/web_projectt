@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 
 const AdminDashboardPage = () => {
-  // Sample data - in a real app, this would come from an API or Redux store
   const orders = [
     {
       id: 1,

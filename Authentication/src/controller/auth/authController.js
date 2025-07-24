@@ -58,10 +58,10 @@ const login = async (req, res) => {
     console.log("User found:", user.toJSON()); 
     console.log("User role:", user.role);     
    
-    if (user.role === 'admin') {
-      console.log("Attempted login by admin through user endpoint. Blocking.");
-      return res.status(403).send({ message: "Admin users cannot log in through this endpoint." });
-    }
+    // if (user.role === 'admin') {
+    //   console.log("Attempted login by admin through user endpoint. Blocking.");
+    //   return res.status(403).send({ message: "Admin users cannot log in through this endpoint." });
+    // }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {

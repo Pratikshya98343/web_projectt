@@ -28,13 +28,7 @@ const AdminHeader = () => {
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-  const handleProfileClick = () => {
-    navigate("/admin/AdminProfile");
-  };
-
-  const handleSettingsClick = () => {
-    navigate("/admin/settings");
-  };
+ 
 
   const handleLogoutClick = () => {
     dispatch(logoutUser());
@@ -89,23 +83,9 @@ const AdminHeader = () => {
                   <div className="px-4 py-3 text-sm text-gray-700 border-b border-gray-100 bg-amber-50">
                     <div className="font-medium text-amber-900">John Doe</div>
                     <div className="text-amber-700 text-xs mt-1">
-                      admin@company.com
+                      admin@gmail.com
                     </div>
                   </div>
-                  <button
-                    onClick={handleProfileClick}
-                    className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 text-left transition-colors"
-                  >
-                    <UserCircle size={16} className="mr-3 text-amber-600" />
-                    Profile
-                  </button>
-                  <button
-                    onClick={handleSettingsClick}
-                    className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 text-left transition-colors"
-                  >
-                    <Settings size={16} className="mr-3 text-amber-600" />
-                    Settings
-                  </button>
                   <div className="border-t border-gray-100 mt-1">
                     <button
                       onClick={handleLogoutClick}
@@ -172,8 +152,9 @@ const AdminSidebar = () => {
         </div>
 
         <nav className="flex flex-col gap-6">
-          {tabs.map((tab) => (
+          {tabs.map((tab, index) => (
             <Link
+              key={index}
               to={tab.url}
               className={`w-full !flex items-center space-x-3 px-5 py-3.5 rounded-lg transition-all duration-300 ${
                 currentPath === tab.url
@@ -201,7 +182,6 @@ const AdminSidebar = () => {
 const AdminLayout = () => {
   const path = useLocation().pathname;
 
-  // Don't show sidebar on login page
   const isLoginPage = path.includes("login");
 
   if (isLoginPage) {

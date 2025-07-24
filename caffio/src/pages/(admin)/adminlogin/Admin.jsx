@@ -191,6 +191,13 @@ export default function AdminLogin() {
           >
             Sign In to Dashboard
           </button>
+          <button
+            type="button" // 👈 This prevents the form submission
+            onClick={() => navigate("/Signin")}
+            className="mt-4 text-sm text-[#8B5E3C] hover:text-[#6F4E37] transition-colors underline"
+          >
+            Login as User
+          </button>
         </div>
 
         {/* Coffee Steam Animation */}

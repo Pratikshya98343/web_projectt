@@ -3,3 +3,5 @@ export * from "./auth/authRoute.js";
 export * from "./category/categoryRoute.js";
 export * from "./product/productRoute.js";
 export * from "./order/orderRoute.js";
+export * from "./menu/menuRoute.js";
+export * from "./profile/Profileroute.js";

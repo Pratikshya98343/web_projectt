@@ -7,6 +7,7 @@ export default function ContactSection() {
     phone: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -16,48 +17,66 @@ export default function ContactSection() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Message sent successfully! (This is a demo)');
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      message: ''
-    });
+
+    if (!formData.name || !formData.email || !formData.message) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('✅ Message sent successfully!');
+        setFormData({ name: '', email: '', phone: '', message: '' });
+      } else {
+        alert(` ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert(' Failed to send message.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <section 
-      id="contact" 
-      className="relative min-h-screen bg-gradient-to-br from-[#F5E6D3] via-[#DCC7B1] to-[#6F4E37] py-20 px-5"
-    >
+    <section id="contact" className="relative min-h-screen bg-gradient-to-br from-[#F5E6D3] via-[#DCC7B1] to-[#6F4E37] py-20 px-5">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold text-[#6F4E37] container mx-auto px-6 py-12 relative z-10">   
+        <h1 className="text-4xl font-bold text-[#6F4E37] container mx-auto px-6 py-12 relative z-10">
           CONTACT US
         </h1>
         <div className="w-24 h-1 bg-[#C19A6B] mx-auto rounded-full mb-6"></div>
         <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
-          We'd love to hear from you! Get in touch with us for any questions about our services, 
+          We'd love to hear from you! Get in touch with us for any questions about our services,
           reservations, or just to say hello.
         </p>
       </div>
-      
+
       {/* Main Contact Container */}
       <div className="max-w-9xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          
           {/* Contact Info Section */}
           <div className="bg-[#F8F1E6] rounded-3xl p-12 shadow-lg">
             <h3 className="text-4xl font-bold text-[#3E2723] mb-10">Get In Touch</h3>
-            
+
             {/* Map Container */}
             <div className="relative overflow-hidden rounded-xl mb-8">
-              <img 
-                src="/image/map.png" 
+              <img
+                src="/image/map.png"
                 alt="Caffio Location Map"
                 className="w-full h-64 object-cover"
               />
@@ -67,28 +86,26 @@ export default function ContactSection() {
             <div className="space-y-6">
               <div className="p-6 bg-white rounded-xl text-center shadow-sm">
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  We're here to help! Send us a message using the form and we'll get back to you as soon as possible. 
+                  We're here to help! Send us a message using the form and we'll get back to you as soon as possible.
                   For immediate assistance, please check our footer for contact details and business hours.
                 </p>
               </div>
-              
+
               <div className="p-6 bg-[#E6D4C0] rounded-xl text-center">
                 <h4 className="text-lg font-semibold text-[#3E2723] mb-2">Special Events & Catering</h4>
                 <p className="text-gray-600">
-                  Planning a special event? We offer catering services and private bookings. 
+                  Planning a special event? We offer catering services and private bookings.
                   Let us know your requirements in the message form!
                 </p>
               </div>
             </div>
           </div>
-          
+
           {/* Form Section */}
           <div className="bg-[#F8F1E6] rounded-3xl p-12 shadow-lg">
-            <h2 className="text-4xl font-bold text-[#3E2723] mb-10">
-              Send Us a Message
-            </h2>
-            
-            <div className="space-y-6">
+            <h2 className="text-4xl font-bold text-[#3E2723] mb-10">Send Us a Message</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Input */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -155,12 +172,12 @@ export default function ContactSection() {
               {/* Submit Button */}
               <button
                 type="submit"
-                onClick={handleSubmit}
-                className="w-full py-4 px-6 bg-[#6F4E37] hover:bg-[#5D3A2A] rounded-lg font-semibold text-lg text-white transition-colors duration-200 shadow-md hover:shadow-lg"
+                disabled={isSubmitting}
+                className="w-full py-4 px-6 bg-[#6F4E37] hover:bg-[#5D3A2A] disabled:bg-gray-500 rounded-lg font-semibold text-lg text-white transition-colors duration-200 shadow-md hover:shadow-lg"
               >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
