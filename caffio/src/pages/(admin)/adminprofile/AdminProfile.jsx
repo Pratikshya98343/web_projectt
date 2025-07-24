@@ -1,67 +1,33 @@
-import React, { useState } from "react";
-import {
-  User,
-  Edit,
-  Camera,
-  Phone,
-  Mail,
-  MapPin,
-  ShoppingBag,
-  Heart,
-  Calendar,
-  Star,
-  Save,
-  X,
-} from "lucide-react";
+import { useState } from "react";
+import { User, Phone, Mail, Calendar } from "lucide-react";
+import { useEffect } from "react";
+import api from "../../../api/axios";
 
 const AdminProfile = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [userInfo, setUserInfo] = useState({
-    name: "admin",
-    email: "admin@gmail.com",
-    phone: "9876543210",
-    profileImage: null,
-  });
+  const [userInfo, setUserInfo] = useState({});
 
-  const [originalInfo, setOriginalInfo] = useState({ ...userInfo });
-
-  const handleInputChange = (field, value) => {
-    setUserInfo((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setUserInfo((prev) => ({
-          ...prev,
-          profileImage: e.target.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+  const fetchUserProfile = async () => {
+    try {
+      const { data, status } = await api.get("/users/profile");
+      if (status === 200) {
+        console.log("User profile data:", data);
+        setUserInfo({
+          name: `${data?.data?.firstName} ${data?.data?.lastName}`,
+          email: data?.data?.email,
+          phone: data?.data?.phone,
+          profileImage: data?.data?.profileImage || null,
+          joinedDate: new Date(data?.data?.createdAt).toLocaleDateString(),
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching user profile:", err);
+      alert("Failed to fetch user profile. Please try again later.");
     }
   };
 
-  const handleEdit = () => {
-    setOriginalInfo({ ...userInfo });
-    setIsEditing(true);
-  };
-
-  const handleSave = () => {
-    setIsEditing(false);
-    setOriginalInfo({ ...userInfo });
-    console.log("Saving user info:", userInfo);
-    alert("Profile updated successfully!");
-  };
-
-  const handleCancel = () => {
-    setUserInfo({ ...originalInfo });
-    setIsEditing(false);
-  };
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   return (
     <div className="mx-auto px-4 py-8 max-w-4xl">
@@ -79,32 +45,6 @@ const AdminProfile = () => {
           <h2 className="text-2xl font-semibold text-amber-800">
             Profile Information
           </h2>
-          {!isEditing ? (
-            <button
-              onClick={handleEdit}
-              className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-black rounded-lg hover:bg-amber-700 transition-colors shadow-md"
-            >
-              <Edit size={16} />
-              Edit Profile
-            </button>
-          ) : (
-            <div className="flex gap-2">
-              <button
-                onClick={handleSave}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-black rounded-lg hover:bg-green-700 transition-colors shadow-md"
-              >
-                <Save size={16} />
-                Save Changes
-              </button>
-              <button
-                onClick={handleCancel}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-black rounded-lg hover:bg-red-700 transition-colors shadow-md"
-              >
-                <X size={16} />
-                Cancel
-              </button>
-            </div>
-          )}
         </div>
 
         <div className="flex flex-col md:flex-row gap-8">
@@ -122,17 +62,6 @@ const AdminProfile = () => {
                   <User size={48} className="text-amber-600" />
                 )}
               </div>
-              {isEditing && (
-                <label className="absolute bottom-0 right-0 bg-amber-600 text-white p-2 rounded-full cursor-pointer hover:bg-amber-700 transition-colors shadow-lg">
-                  <Camera size={16} />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                </label>
-              )}
             </div>
           </div>
 
@@ -143,56 +72,20 @@ const AdminProfile = () => {
                 <label className="block text-sm font-medium text-amber-800 mb-2">
                   Full Name
                 </label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={userInfo.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    className="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                  />
-                ) : (
-                  <p className="text-amber-900 py-2 font-medium">
-                    {userInfo.name}
-                  </p>
-                )}
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-amber-800 mb-2">
-                  Phone Number
-                </label>
-                {isEditing ? (
-                  <input
-                    type="tel"
-                    value={userInfo.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                    className="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                  />
-                ) : (
-                  <p className="text-amber-900 py-2 flex items-center gap-2">
-                    <Phone size={16} className="text-amber-600" />
-                    {userInfo.phone}
-                  </p>
-                )}
+                <p className="text-amber-900 py-2 font-medium">
+                  {userInfo.name}
+                </p>
               </div>
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-amber-800 mb-2">
                   Email Address
                 </label>
-                {isEditing ? (
-                  <input
-                    type="email"
-                    value={userInfo.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                  />
-                ) : (
-                  <p className="text-amber-900 py-2 flex items-center gap-2">
-                    <Mail size={16} className="text-amber-600" />
-                    {userInfo.email}
-                  </p>
-                )}
+                <p className="text-amber-900 py-2 flex items-center gap-2">
+                  <Mail size={16} className="text-amber-600" />
+                  {userInfo.email}
+                </p>
               </div>
 
               <div className="md:col-span-2"></div>
@@ -201,7 +94,7 @@ const AdminProfile = () => {
             <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
               <p className="text-sm text-amber-700 flex items-center gap-2">
                 <Calendar size={16} />
-                Member since {userInfo.joinDate}
+                Member since {userInfo.joinedDate}
               </p>
             </div>
           </div>

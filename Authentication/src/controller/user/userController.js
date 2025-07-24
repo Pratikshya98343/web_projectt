@@ -87,12 +87,12 @@ const delelteById = async (req, res) => {
  */
 const getById = async (req, res) => {
   try {
-    const { id = null } = req.params;
+    const { id } = req.user;
     const user = await User.findOne({ where: { id } });
     if (!user) {
       return res.status(500).send({ message: "User not found" });
     }
-    res.status(201).send({ message: "user fetched successfully", data: user });
+    res.status(200).send({ message: "user fetched successfully", data: user });
   } catch (e) {
     res.status(500).json({ error: "Failed to fetch users" });
   }
