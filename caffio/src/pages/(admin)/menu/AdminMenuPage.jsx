@@ -11,26 +11,25 @@ const AdminMenuPage = () => {
   const [categories, setCategories] = useState([]);
 
   const [newMenu, setNewMenu] = useState({
-    title: "",
+    name: "",
     description: "",
     price: "",
     categoryId: "",
     imageUrl: "",
-    stock: "",
-    isAvailable: true,
+    imageFile: null,
+    ingredients: [],
+    brewTime: "",
+    caffeine: "",
+    temperature: "",
+    rating: 4.5,
+    nutritionalInfo: {
+      calories: 0,
+      protein: "0g",
+      carbs: "0g",
+      fat: "0g",
+    },
+    preparationSteps: [],
   });
-
-  const fetchMenus = async () => {
-    try {
-      setLoading(true);
-      const { data } = await api.get("/menu");
-      setMenuItems(data?.data || []);
-    } catch (err) {
-      console.error("Error fetching menu items:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchCategories = async () => {
     try {
@@ -41,6 +40,18 @@ const AdminMenuPage = () => {
     }
   };
 
+  const fetchMenus = async () => {
+    try {
+      setLoading(true);
+      const { data } = await api.get("/product");
+      setMenuItems(data?.data || []);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching menu items:", err);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchMenus();
     fetchCategories();
@@ -48,40 +59,136 @@ const AdminMenuPage = () => {
 
   const handleAddMenu = async () => {
     try {
-      await api.post("/menu", newMenu);
-    } catch (err) {
-      console.error("Error adding menu item:", err);
-    } finally {
-      fetchMenus();
+      if (!newMenu.name || !newMenu.price || !newMenu.categoryId) {
+        alert("Please fill in all required fields");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("name", newMenu.name);
+      formData.append("description", newMenu.description);
+      formData.append("price", newMenu.price);
+      formData.append("categoryId", newMenu.categoryId);
+
+      // Add the additional fields from the Product model
+      formData.append("ingredients", JSON.stringify(newMenu.ingredients || []));
+      formData.append("brewTime", newMenu.brewTime || "");
+      formData.append("caffeine", newMenu.caffeine || "");
+      formData.append("temperature", newMenu.temperature || "");
+      formData.append("rating", newMenu.rating || 0);
+      formData.append(
+        "nutritionalInfo",
+        JSON.stringify(newMenu.nutritionalInfo || {})
+      );
+      formData.append(
+        "preparationSteps",
+        JSON.stringify(newMenu.preparationSteps || [])
+      );
+
+      if (newMenu.imageFile) {
+        formData.append("image", newMenu.imageFile);
+      } else if (newMenu.imageUrl) {
+        formData.append("image", newMenu.imageUrl);
+      }
+
+      await api.post("/product", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       setShowModal(false);
       resetForm();
+      fetchMenus();
+      alert("Menu item added successfully!");
+    } catch (err) {
+      console.error("Error adding menu item:", err);
+      alert(
+        `Failed to add menu item: ${err.response?.data?.error || err.message}`
+      );
     }
   };
 
   const handleEditMenu = (menu) => {
     setEditingMenu(menu);
     setNewMenu({
-      title: menu.title,
+      name: menu.name,
       description: menu.description,
       price: menu.price,
       categoryId: menu.categoryId,
-      imageUrl: menu.imageUrl,
-      stock: menu.stock,
-      isAvailable: menu.isAvailable,
+      imageUrl: menu.image,
+      imageFile: null,
+      ingredients: JSON.parse(menu.ingredients) || [],
+      brewTime: menu.brewTime || "",
+      caffeine: menu.caffeine || "",
+      temperature: menu.temperature || "",
+      rating: menu.rating || 4.5,
+      nutritionalInfo: JSON.parse(menu.nutritionalInfo) || {
+        calories: 0,
+        protein: "0g",
+        carbs: "0g",
+        fat: "0g",
+      },
+      preparationSteps: JSON.parse(menu.preparationSteps) || [],
     });
     setShowModal(true);
   };
 
   const handleUpdateMenu = async () => {
     try {
-      await api.patch(`/menu/${editingMenu.id}`, newMenu);
+      if (!newMenu.name || !newMenu.price || !newMenu.categoryId) {
+        alert("Please fill in all required fields");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("name", newMenu.name);
+      formData.append("description", newMenu.description);
+      formData.append("price", newMenu.price);
+      formData.append("categoryId", newMenu.categoryId);
+
+      // Add the additional fields from the Product model
+      formData.append("ingredients", JSON.stringify(newMenu.ingredients || []));
+      formData.append("brewTime", newMenu.brewTime || "");
+      formData.append("caffeine", newMenu.caffeine || "");
+      formData.append("temperature", newMenu.temperature || "");
+      formData.append("rating", newMenu.rating || 0);
+      formData.append(
+        "nutritionalInfo",
+        JSON.stringify(newMenu.nutritionalInfo || {})
+      );
+      formData.append(
+        "preparationSteps",
+        JSON.stringify(newMenu.preparationSteps || [])
+      );
+
+      if (newMenu.imageFile) {
+        formData.append("image", newMenu.imageFile);
+      } else if (
+        newMenu.imageUrl &&
+        !newMenu.imageUrl.includes(import.meta.env.VITE_BASE_URL)
+      ) {
+        formData.append("image", newMenu.imageUrl);
+      }
+
+      await api.patch(`/product/${editingMenu.id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setShowModal(false);
+      setEditingMenu(null);
+      resetForm();
+      fetchMenus();
+      alert("Menu item updated successfully!");
     } catch (err) {
       console.error("Error updating menu item:", err);
-    } finally {
-      fetchMenus();
-      setEditingMenu(null);
-      setShowModal(false);
-      resetForm();
+      alert(
+        `Failed to update menu item: ${
+          err.response?.data?.error || err.message
+        }`
+      );
     }
   };
 
@@ -90,23 +197,41 @@ const AdminMenuPage = () => {
     if (!confirmDelete) return;
 
     try {
-      await api.delete(`/menu/${id}`);
+      await api.delete(`/product/${id}`);
+      fetchMenus();
+      alert("Menu item deleted successfully!");
     } catch (err) {
       console.error("Error deleting menu item:", err);
-    } finally {
-      fetchMenus();
+      alert(
+        `Failed to delete menu item: ${
+          err.response?.data?.error || err.message
+        }`
+      );
     }
   };
 
   const resetForm = () => {
     setNewMenu({
-      title: "",
+      name: "",
       description: "",
       price: "",
       categoryId: "",
       imageUrl: "",
+      imageFile: null,
       stock: "",
       isAvailable: true,
+      ingredients: [],
+      brewTime: "",
+      caffeine: "",
+      temperature: "",
+      rating: 4.5,
+      nutritionalInfo: {
+        calories: 0,
+        protein: "0g",
+        carbs: "0g",
+        fat: "0g",
+      },
+      preparationSteps: [],
     });
   };
 
@@ -115,8 +240,12 @@ const AdminMenuPage = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-3xl font-bold text-gray-800">Menu Management</h2>
-            <p className="text-gray-600 mt-1">Manage your café menu offerings</p>
+            <h2 className="text-3xl font-bold text-gray-800">
+              Menu Management
+            </h2>
+            <p className="text-gray-600 mt-1">
+              Manage your café menu offerings
+            </p>
           </div>
           <button
             onClick={() => setShowModal(true)}
@@ -136,13 +265,17 @@ const AdminMenuPage = () => {
                   className="bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
                 >
                   <img
-                    src={item.imageUrl}
-                    alt={item.title}
+                    src={item.image}
+                    alt={item.name}
                     className="w-full h-48 object-cover rounded-t-2xl"
+                    onError={(e) => {
+                      e.target.src =
+                        "https://via.placeholder.com/300x200?text=No+Image";
+                    }}
                   />
                   <div className="p-6">
                     <h3 className="text-xl font-bold text-gray-800 mb-1">
-                      {item.title}
+                      {item.name}
                     </h3>
                     <p className="text-gray-600 text-sm mb-2">
                       {item.description}
@@ -151,7 +284,7 @@ const AdminMenuPage = () => {
                       ${parseFloat(item.price).toFixed(2)}
                     </p>
                     <p className="text-gray-500 text-sm mb-2">
-                      Category: {item.Category?.name || "N/A"}
+                      Category: {item.category?.name || "N/A"}
                     </p>
                     <div className="flex justify-between items-center mt-4">
                       <button
@@ -189,14 +322,14 @@ const AdminMenuPage = () => {
           setEditingMenu(null);
           resetForm();
         }}
-        title={editingMenu ? "Edit Menu Item" : "Add New Menu Item"}
+        name={editingMenu ? "Edit Menu Item" : "Add New Menu Item"}
       >
         <div className="space-y-4">
           <input
             type="text"
-            placeholder="Title"
-            value={newMenu.title}
-            onChange={(e) => setNewMenu({ ...newMenu, title: e.target.value })}
+            placeholder="name"
+            value={newMenu.name}
+            onChange={(e) => setNewMenu({ ...newMenu, name: e.target.value })}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
           />
           <textarea
@@ -229,32 +362,197 @@ const AdminMenuPage = () => {
               </option>
             ))}
           </select>
-          <input
-            type="text"
-            placeholder="Image URL"
-            value={newMenu.imageUrl}
-            onChange={(e) =>
-              setNewMenu({ ...newMenu, imageUrl: e.target.value })
-            }
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          />
-          <input
-            type="number"
-            placeholder="Stock"
-            value={newMenu.stock}
-            onChange={(e) => setNewMenu({ ...newMenu, stock: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          />
-          <div className="flex items-center space-x-2">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
-              type="checkbox"
-              checked={newMenu.isAvailable}
+              type="text"
+              placeholder="Image URL"
+              value={newMenu.imageUrl}
               onChange={(e) =>
-                setNewMenu({ ...newMenu, isAvailable: e.target.checked })
+                setNewMenu({ ...newMenu, imageUrl: e.target.value })
               }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             />
-            <label>Available</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setNewMenu({
+                  ...newMenu,
+                  imageFile: e.target.files[0],
+                  imageUrl: e.target.files[0]
+                    ? URL.createObjectURL(e.target.files[0])
+                    : newMenu.imageUrl,
+                })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
           </div>
+
+
+          {/* Additional fields from the Product model */}
+          <h3 className="font-medium text-gray-700 mt-4">Additional Details</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Brew Time (e.g., '4-5 minutes')"
+              value={newMenu.brewTime}
+              onChange={(e) =>
+                setNewMenu({ ...newMenu, brewTime: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
+
+            <input
+              type="text"
+              placeholder="Caffeine Level (e.g., 'High', 'Medium')"
+              value={newMenu.caffeine}
+              onChange={(e) =>
+                setNewMenu({ ...newMenu, caffeine: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Temperature (e.g., 'Hot', 'Cold')"
+              value={newMenu.temperature}
+              onChange={(e) =>
+                setNewMenu({ ...newMenu, temperature: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
+
+            <input
+              type="number"
+              step="0.1"
+              min="0"
+              max="5"
+              placeholder="Rating (0-5)"
+              value={newMenu.rating}
+              onChange={(e) =>
+                setNewMenu({ ...newMenu, rating: parseFloat(e.target.value) })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
+          </div>
+
+          <h4 className="font-medium text-gray-700">
+            Ingredients (comma separated)
+          </h4>
+          <textarea
+            placeholder="Enter ingredients separated by commas (e.g., 'Espresso, Steamed milk, Milk foam')"
+            value={
+              Array.isArray(newMenu.ingredients)
+                ? newMenu.ingredients.join(", ")
+                : ""
+            }
+            onChange={(e) =>
+              setNewMenu({
+                ...newMenu,
+                ingredients: e.target.value
+                  .split(",")
+                  .map((item) => item.trim())
+                  .filter((item) => item),
+              })
+            }
+            rows={2}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          />
+
+          <h4 className="font-medium text-gray-700">
+            Preparation Steps (comma separated)
+          </h4>
+          <textarea
+            placeholder="Enter preparation steps separated by commas"
+            value={
+              Array.isArray(newMenu.preparationSteps)
+                ? newMenu.preparationSteps.join(", ")
+                : ""
+            }
+            onChange={(e) =>
+              setNewMenu({
+                ...newMenu,
+                preparationSteps: e.target.value
+                  .split(",")
+                  .map((item) => item.trim())
+                  .filter((item) => item),
+              })
+            }
+            rows={3}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+          />
+
+          <h4 className="font-medium text-gray-700">Nutritional Information</h4>
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="number"
+              placeholder="Calories"
+              value={newMenu.nutritionalInfo?.calories || 0}
+              onChange={(e) =>
+                setNewMenu({
+                  ...newMenu,
+                  nutritionalInfo: {
+                    ...newMenu.nutritionalInfo,
+                    calories: parseInt(e.target.value) || 0,
+                  },
+                })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
+
+            <input
+              type="text"
+              placeholder="Protein (e.g., '8g')"
+              value={newMenu.nutritionalInfo?.protein || ""}
+              onChange={(e) =>
+                setNewMenu({
+                  ...newMenu,
+                  nutritionalInfo: {
+                    ...newMenu.nutritionalInfo,
+                    protein: e.target.value,
+                  },
+                })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
+
+            <input
+              type="text"
+              placeholder="Carbs (e.g., '24g')"
+              value={newMenu.nutritionalInfo?.carbs || ""}
+              onChange={(e) =>
+                setNewMenu({
+                  ...newMenu,
+                  nutritionalInfo: {
+                    ...newMenu.nutritionalInfo,
+                    carbs: e.target.value,
+                  },
+                })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
+
+            <input
+              type="text"
+              placeholder="Fat (e.g., '7g')"
+              value={newMenu.nutritionalInfo?.fat || ""}
+              onChange={(e) =>
+                setNewMenu({
+                  ...newMenu,
+                  nutritionalInfo: {
+                    ...newMenu.nutritionalInfo,
+                    fat: e.target.value,
+                  },
+                })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            />
+          </div>
+
           <button
             onClick={editingMenu ? handleUpdateMenu : handleAddMenu}
             className="w-full bg-amber-600 hover:bg-amber-700 text-black py-2 px-4 rounded-lg transition"

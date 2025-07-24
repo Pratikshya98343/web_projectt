@@ -4,7 +4,6 @@ import Signin from "./pages/(user)/signin/Signin";
 import Signup from "./pages/(user)/signup/Signup";
 import About from "./pages/(user)/about/About";
 import Menu from "./pages/(user)/menu/Menu";
-import ProductSection from "./pages/(user)/product/Product";
 import GallerySection from "./pages/(user)/gallery/Gallery";
 import ContactSection from "./pages/(user)/contact/Contact";
 import CartPage from "./pages/(user)/cart/Cart";
@@ -34,7 +33,6 @@ function App() {
           <Route exact path="/menu" element={<Menu />} />
           <Route exact path="/cart" element={<CartPage />} />
           <Route exact path="/checkout" element={<CheckoutPage />} />
-          <Route exact path="/product" element={<ProductSection />} />
 
           <Route exact path="/gallery" element={<GallerySection />} />
 
