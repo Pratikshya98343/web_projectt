@@ -81,11 +81,6 @@ const Header = () => {
           </Link>
         </li>
         <li>
-          <Link to="/product" className="nav-link inline-block px-2 py-1">
-            Product
-          </Link>
-        </li>
-        <li>
           <Link to="/gallery" className="nav-link inline-block px-2 py-1">
             Gallery
           </Link>
