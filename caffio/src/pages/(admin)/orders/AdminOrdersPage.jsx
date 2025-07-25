@@ -1,77 +1,63 @@
-import React, { useState } from 'react';
-import { 
-  Eye, 
-  Trash2,
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Eye, Trash2 } from 'lucide-react';
+import api from '../../../api/axios';
 
 const AdminOrdersPage = () => {
   const [showOrderDetailsModal, setShowOrderDetailsModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderFilter, setOrderFilter] = useState('all');
+  const [orders, setOrders] = useState([]);
+  const token = useSelector((state) => state.user.token);
 
-  // Sample data for orders
-  const [orders, setOrders] = useState([
-    {
-      id: 1,
-      customerName: 'John Doe',
-      customerEmail: 'john@example.com',
-      customerPhone: '+1234567890',
-      items: [
-        { name: 'Espresso', quantity: 1, price: 2.50 },
-        { name: 'Croissant', quantity: 1, price: 2.00 }
-      ],
-      total: 4.50,
-      status: 'Completed',
-      time: '10:30 AM',
-      date: '2025-07-14',
-      paymentMethod: 'Card',
-      notes: 'Extra hot please'
-    },
-    {
-      id: 2,
-      customerName: 'Jane Smith',
-      customerEmail: 'jane@example.com',
-      customerPhone: '+1234567891',
-      items: [
-        { name: 'Cappuccino', quantity: 1, price: 3.50 },
-        { name: 'Morning Special', quantity: 1, price: 4.50 }
-      ],
-      total: 8.00,
-      status: 'Pending',
-      time: '11:15 AM',
-      date: '2025-07-14',
-      paymentMethod: 'Cash',
-      notes: 'Regular milk'
-    },
-    {
-      id: 3,
-      customerName: 'Mike Johnson',
-      customerEmail: 'mike@example.com',
-      customerPhone: '+1234567892',
-      items: [
-        { name: 'Latte', quantity: 1, price: 3.00 },
-        { name: 'Sandwich', quantity: 1, price: 2.50 }
-      ],
-      total: 5.50,
-      status: 'In Progress',
-      time: '11:45 AM',
-      date: '2025-07-14',
-      paymentMethod: 'Card',
-      notes: 'No onions'
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await api.get('/orders', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        setOrders(response.data.data || []);
+      } else {
+        console.error('Failed to fetch orders:', response);
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
     }
-  ]);
-
-  const handleUpdateOrderStatus = (orderId, newStatus) => {
-    setOrders(orders.map(order => 
-      order.id === orderId 
-        ? { ...order, status: newStatus }
-        : order
-    ));
   };
 
-  const handleDeleteOrder = (orderId) => {
+  const handleUpdateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const response = await api.patch(`/orders/${orderId}/status`, { status: newStatus });
+      if (response.status === 200) {
+        setOrders(orders.map(order =>
+          order.id === orderId ? { ...order, status: newStatus } : order
+        ));
+      } else {
+        console.error('Failed to update order status:', response);
+      }
+    } catch (error) {
+      console.error('Error updating order status:', error);
+    }
+  };
+
+  const handleDeleteOrder = async (orderId) => {
     if (window.confirm('Are you sure you want to delete this order?')) {
-      setOrders(orders.filter(order => order.id !== orderId));
+      try {
+        const response = await api.delete(`/orders/${orderId}`);
+        if (response.status === 200) {
+          setOrders(orders.filter(order => order.id !== orderId));
+        } else {
+          console.error('Failed to delete order:', response);
+        }
+      } catch (error) {
+        console.error('Error deleting order:', error);
+      }
     }
   };
 
@@ -173,11 +159,11 @@ const AdminOrdersPage = () => {
                         <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-amber-900">
                           #{order.id}
                         </td>
-                        <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-900">{order.customerName}</td>
+                        <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-900">{order.user.firstName} {order.user.lastName}</td>
                         <td className="px-8 py-4 text-sm text-gray-900">
-                          {order.items.map(item => `${item.name} (${item.quantity})`).join(', ')}
+                          {order.items.map(item => `${item.product.name} (${item.quantity})`).join(', ')}
                         </td>
-                        <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-amber-600">${order.total}</td>
+                        <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-amber-600">${order.totalAmount}</td>
                         <td className="px-8 py-4 whitespace-nowrap">
                           <select
                             value={order.status}
@@ -195,7 +181,7 @@ const AdminOrdersPage = () => {
                             <option value="Cancelled">Cancelled</option>
                           </select>
                         </td>
-                        <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-500">{order.time}</td>
+                        <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(order.createdAt).toLocaleTimeString()}</td>
                         <td className="px-8 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
                             <button
@@ -250,15 +236,14 @@ const AdminOrdersPage = () => {
           <div className="space-y-4">
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-semibold text-gray-800 mb-2">Customer Information</h4>
-              <p><strong>Name:</strong> {selectedOrder.customerName}</p>
-              <p><strong>Email:</strong> {selectedOrder.customerEmail}</p>
-              <p><strong>Phone:</strong> {selectedOrder.customerPhone}</p>
+              <p><strong>Name:</strong> {selectedOrder.user.firstName} {selectedOrder.user.lastName}</p>
+              <p><strong>Email:</strong> {selectedOrder.user.email}</p>
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-semibold text-gray-800 mb-2">Order Details</h4>
-              <p><strong>Date:</strong> {selectedOrder.date}</p>
-              <p><strong>Time:</strong> {selectedOrder.time}</p>
+              <p><strong>Date:</strong> {new Date(selectedOrder.createdAt).toLocaleDateString()}</p>
+              <p><strong>Time:</strong> {new Date(selectedOrder.createdAt).toLocaleTimeString()}</p>
               <p><strong>Payment Method:</strong> {selectedOrder.paymentMethod}</p>
               <p><strong>Status:</strong> 
                 <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${
@@ -277,7 +262,7 @@ const AdminOrdersPage = () => {
               <div className="space-y-2">
                 {selectedOrder.items.map((item, index) => (
                   <div key={index} className="flex justify-between items-center">
-                    <span>{item.name} x{item.quantity}</span>
+                    <span>{item.product.name} x{item.quantity}</span>
                     <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
                   </div>
                 ))}
@@ -285,7 +270,7 @@ const AdminOrdersPage = () => {
               <div className="border-t pt-2 mt-2">
                 <div className="flex justify-between items-center font-bold text-lg">
                   <span>Total:</span>
-                  <span className="text-amber-600">${selectedOrder.total.toFixed(2)}</span>
+                  <span className="text-amber-600">${selectedOrder.totalAmount.toFixed(2)}</span>
                 </div>
               </div>
             </div>

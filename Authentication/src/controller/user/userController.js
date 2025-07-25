@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import { User } from "../../models/index.js";
 
 /**
@@ -107,4 +105,3 @@ export const userController = {
   delelteById,
   update,
 };
->>>>>>> 1e29e666527898780ce781402b23442c1798ec26

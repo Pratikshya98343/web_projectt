@@ -28,8 +28,6 @@ const AdminHeader = () => {
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
- 
-
   const handleLogoutClick = () => {
     dispatch(logoutUser());
     navigate("/admin/login");
@@ -71,7 +69,7 @@ const AdminHeader = () => {
                 <User size={18} className="text-amber-800" />
               </div>
               <span className="hidden md:block text-sm font-medium">
-                John Doe
+                Admin
               </span>
               <ChevronDown size={16} />
             </button>
@@ -81,7 +79,7 @@ const AdminHeader = () => {
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 overflow-hidden">
                 <div className="py-1">
                   <div className="px-4 py-3 text-sm text-gray-700 border-b border-gray-100 bg-amber-50">
-                    <div className="font-medium text-amber-900">John Doe</div>
+                    <div className="font-medium text-amber-900">Admin</div>
                     <div className="text-amber-700 text-xs mt-1">
                       admin@gmail.com
                     </div>
@@ -147,8 +145,7 @@ const AdminSidebar = () => {
     <div className="w-72 m-0 box-border font-sans bg-gradient-to-b from-amber-900 to-amber-800 text-white min-h-screen p-5 shadow-xl">
       <div className="max-w-6xl mx-auto px-1 py-30">
         <div className="flex items-center space-x-2 mb-10 border-b border-amber-700 pb-4">
-          <Coffee className="h-10 w-10 text-amber-200" />
-          <h1 className="text-2xl font-bold text-amber-100">Caffio Admin</h1>
+          <h1 className="text-2xl font-bold text-amber-100">Admin</h1>
         </div>
 
         <nav className="flex flex-col gap-6">

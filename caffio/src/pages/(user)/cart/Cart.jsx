@@ -1,5 +1,4 @@
-// src/pages/CartPage.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   removeFromCart,
@@ -7,22 +6,35 @@ import {
   clearCart,
 } from "../../../redux/reducerSlice/CartSlice";
 import { Link, useNavigate } from "react-router-dom";
-
-// Import both data sources
-import { menuItems } from "../../(user)/menu/Menu";
+import api from "../../../api/axios";
 
 export default function CartPage() {
   const cartItems = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Combine all available items into one lookup list
-  const allAvailableItems = [...menuItems];
+  const [allAvailableItems, setAllAvailableItems] = useState([]);
 
-  // Enrich cart items with full details from either products or menuItems
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await api.get("/product");
+        console.log("Fetched products for cart:", data?.data);
+        setAllAvailableItems(data?.data || []);
+      } catch (error) {
+        console.error("Error fetching products for cart:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  console.log("Cart items from Redux:", cartItems);
+  console.log("All available items:", allAvailableItems);
+
+  // Enrich cart items with full details from fetched products
   const cartWithDetails = cartItems
     .map((cartItem) => {
-      const product = allAvailableItems.find((item) => item.id === cartItem.id);
+      const product = allAvailableItems.find((item) => String(item.id) === String(cartItem.id));
       if (!product) {
         console.warn(`Product not found for ID: ${cartItem.id}`);
         return null;
@@ -54,6 +66,10 @@ export default function CartPage() {
   const handleContinueShopping = () => {
     navigate("/Product");
     navigate("/Menu");
+  };
+
+  const handleProceedToCheckout = () => {
+    navigate("/checkout");
   };
 
   return (
@@ -118,7 +134,7 @@ export default function CartPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="bg-[#8B4513] text-white px-2 py-1 rounded-full text-xs font-semibold">
-                              {item.roastLevel || item.category}
+                              {item.roastLevel || (typeof item.category === 'object' ? item.category.name || '' : item.category)}
                             </span>
                             <div className="flex items-center gap-1">
                               <svg
@@ -129,7 +145,7 @@ export default function CartPage() {
                               >
                                 <path
                                   fillRule="evenodd"
-                                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006..."
+                                  d="M10.788 3.21a1 1 0 011.424 0l2.082 5.006 5.404.434a1 1 0 01.562 1.706l-4.117 3.527 1.257 5.273a1 1 0 01-1.451 1.054L12 18.354l-4.755 2.855a1 1 0 01-1.451-1.054l1.257-5.273-4.117-3.527a1 1 0 01.562-1.706l5.404-.434 2.082-5.006z"
                                   clipRule="evenodd"
                                 />
                               </svg>
@@ -139,10 +155,10 @@ export default function CartPage() {
                             </div>
                           </div>
                           <h2 className="text-xl font-bold text-[#8B4513] mb-2">
-                            {item.name}
+                            {typeof item.name === 'object' ? item.name.name || '' : item.name}
                           </h2>
                           <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                            {item.description}
+                            {typeof item.description === 'object' ? item.description.text || '' : item.description}
                           </p>
                           <div className="flex items-center gap-4 mb-4">
                             <span className="text-lg font-bold text-[#8B4513]">

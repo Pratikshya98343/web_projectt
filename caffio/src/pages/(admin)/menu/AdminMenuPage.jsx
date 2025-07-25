@@ -70,16 +70,6 @@ const AdminMenuPage = () => {
       formData.append("price", newMenu.price);
       formData.append("categoryId", newMenu.categoryId);
 
-      // Add the additional fields from the Product model
-      formData.append("ingredients", JSON.stringify(newMenu.ingredients || []));
-      formData.append("brewTime", newMenu.brewTime || "");
-      formData.append("caffeine", newMenu.caffeine || "");
-      formData.append("temperature", newMenu.temperature || "");
-      formData.append("rating", newMenu.rating || 0);
-      formData.append(
-        "nutritionalInfo",
-        JSON.stringify(newMenu.nutritionalInfo || {})
-      );
       formData.append(
         "preparationSteps",
         JSON.stringify(newMenu.preparationSteps || [])
@@ -118,18 +108,6 @@ const AdminMenuPage = () => {
       categoryId: menu.categoryId,
       imageUrl: menu.image,
       imageFile: null,
-      ingredients: JSON.parse(menu.ingredients) || [],
-      brewTime: menu.brewTime || "",
-      caffeine: menu.caffeine || "",
-      temperature: menu.temperature || "",
-      rating: menu.rating || 4.5,
-      nutritionalInfo: JSON.parse(menu.nutritionalInfo) || {
-        calories: 0,
-        protein: "0g",
-        carbs: "0g",
-        fat: "0g",
-      },
-      preparationSteps: JSON.parse(menu.preparationSteps) || [],
     });
     setShowModal(true);
   };
@@ -146,21 +124,6 @@ const AdminMenuPage = () => {
       formData.append("description", newMenu.description);
       formData.append("price", newMenu.price);
       formData.append("categoryId", newMenu.categoryId);
-
-      // Add the additional fields from the Product model
-      formData.append("ingredients", JSON.stringify(newMenu.ingredients || []));
-      formData.append("brewTime", newMenu.brewTime || "");
-      formData.append("caffeine", newMenu.caffeine || "");
-      formData.append("temperature", newMenu.temperature || "");
-      formData.append("rating", newMenu.rating || 0);
-      formData.append(
-        "nutritionalInfo",
-        JSON.stringify(newMenu.nutritionalInfo || {})
-      );
-      formData.append(
-        "preparationSteps",
-        JSON.stringify(newMenu.preparationSteps || [])
-      );
 
       if (newMenu.imageFile) {
         formData.append("image", newMenu.imageFile);
@@ -218,20 +181,6 @@ const AdminMenuPage = () => {
       categoryId: "",
       imageUrl: "",
       imageFile: null,
-      stock: "",
-      isAvailable: true,
-      ingredients: [],
-      brewTime: "",
-      caffeine: "",
-      temperature: "",
-      rating: 4.5,
-      nutritionalInfo: {
-        calories: 0,
-        protein: "0g",
-        carbs: "0g",
-        fat: "0g",
-      },
-      preparationSteps: [],
     });
   };
 
@@ -244,7 +193,7 @@ const AdminMenuPage = () => {
               Menu Management
             </h2>
             <p className="text-gray-600 mt-1">
-              Manage your café menu offerings
+              Manage your cafe menu offerings
             </p>
           </div>
           <button
@@ -383,170 +332,6 @@ const AdminMenuPage = () => {
                   imageUrl: e.target.files[0]
                     ? URL.createObjectURL(e.target.files[0])
                     : newMenu.imageUrl,
-                })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-
-
-          {/* Additional fields from the Product model */}
-          <h3 className="font-medium text-gray-700 mt-4">Additional Details</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Brew Time (e.g., '4-5 minutes')"
-              value={newMenu.brewTime}
-              onChange={(e) =>
-                setNewMenu({ ...newMenu, brewTime: e.target.value })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-
-            <input
-              type="text"
-              placeholder="Caffeine Level (e.g., 'High', 'Medium')"
-              value={newMenu.caffeine}
-              onChange={(e) =>
-                setNewMenu({ ...newMenu, caffeine: e.target.value })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Temperature (e.g., 'Hot', 'Cold')"
-              value={newMenu.temperature}
-              onChange={(e) =>
-                setNewMenu({ ...newMenu, temperature: e.target.value })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-
-            <input
-              type="number"
-              step="0.1"
-              min="0"
-              max="5"
-              placeholder="Rating (0-5)"
-              value={newMenu.rating}
-              onChange={(e) =>
-                setNewMenu({ ...newMenu, rating: parseFloat(e.target.value) })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-
-          <h4 className="font-medium text-gray-700">
-            Ingredients (comma separated)
-          </h4>
-          <textarea
-            placeholder="Enter ingredients separated by commas (e.g., 'Espresso, Steamed milk, Milk foam')"
-            value={
-              Array.isArray(newMenu.ingredients)
-                ? newMenu.ingredients.join(", ")
-                : ""
-            }
-            onChange={(e) =>
-              setNewMenu({
-                ...newMenu,
-                ingredients: e.target.value
-                  .split(",")
-                  .map((item) => item.trim())
-                  .filter((item) => item),
-              })
-            }
-            rows={2}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          />
-
-          <h4 className="font-medium text-gray-700">
-            Preparation Steps (comma separated)
-          </h4>
-          <textarea
-            placeholder="Enter preparation steps separated by commas"
-            value={
-              Array.isArray(newMenu.preparationSteps)
-                ? newMenu.preparationSteps.join(", ")
-                : ""
-            }
-            onChange={(e) =>
-              setNewMenu({
-                ...newMenu,
-                preparationSteps: e.target.value
-                  .split(",")
-                  .map((item) => item.trim())
-                  .filter((item) => item),
-              })
-            }
-            rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          />
-
-          <h4 className="font-medium text-gray-700">Nutritional Information</h4>
-          <div className="grid grid-cols-2 gap-4">
-            <input
-              type="number"
-              placeholder="Calories"
-              value={newMenu.nutritionalInfo?.calories || 0}
-              onChange={(e) =>
-                setNewMenu({
-                  ...newMenu,
-                  nutritionalInfo: {
-                    ...newMenu.nutritionalInfo,
-                    calories: parseInt(e.target.value) || 0,
-                  },
-                })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-
-            <input
-              type="text"
-              placeholder="Protein (e.g., '8g')"
-              value={newMenu.nutritionalInfo?.protein || ""}
-              onChange={(e) =>
-                setNewMenu({
-                  ...newMenu,
-                  nutritionalInfo: {
-                    ...newMenu.nutritionalInfo,
-                    protein: e.target.value,
-                  },
-                })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-
-            <input
-              type="text"
-              placeholder="Carbs (e.g., '24g')"
-              value={newMenu.nutritionalInfo?.carbs || ""}
-              onChange={(e) =>
-                setNewMenu({
-                  ...newMenu,
-                  nutritionalInfo: {
-                    ...newMenu.nutritionalInfo,
-                    carbs: e.target.value,
-                  },
-                })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-
-            <input
-              type="text"
-              placeholder="Fat (e.g., '7g')"
-              value={newMenu.nutritionalInfo?.fat || ""}
-              onChange={(e) =>
-                setNewMenu({
-                  ...newMenu,
-                  nutritionalInfo: {
-                    ...newMenu.nutritionalInfo,
-                    fat: e.target.value,
-                  },
                 })
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"

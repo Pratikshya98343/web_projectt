@@ -34,34 +34,6 @@ export const Coffee = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    ingredients: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-    },
-    brewTime: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    caffeine: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    temperature: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    rating: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-    },
-    nutritionalInfo: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-    },
-    preparationSteps: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-    },
   },
   {
     sequelize,

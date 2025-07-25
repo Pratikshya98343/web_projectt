@@ -8,6 +8,7 @@ import GallerySection from "./pages/(user)/gallery/Gallery";
 import ContactSection from "./pages/(user)/contact/Contact";
 import CartPage from "./pages/(user)/cart/Cart";
 import CheckoutPage from "./pages/(user)/checkout/Checkout";
+import OrderSuccess from "./pages/(user)/order-success/OrderSuccess";
 import Admin from "./pages/(admin)/adminlogin/Admin";
 import AccountProfile from "./pages/(user)/accountProfile/AccountProfile";
 import AccountSetting from "./pages/(user)/accountSetting/AccountSetting";
@@ -33,6 +34,7 @@ function App() {
           <Route exact path="/menu" element={<Menu />} />
           <Route exact path="/cart" element={<CartPage />} />
           <Route exact path="/checkout" element={<CheckoutPage />} />
+          <Route exact path="/order-success" element={<OrderSuccess />} />
 
           <Route exact path="/gallery" element={<GallerySection />} />
 

@@ -49,7 +49,7 @@ export default function AdminLogin() {
       if (data?.data?.access_token) {
         const token = data.data.access_token;
         dispatch(loginUser({ user: data.data.user, token }));
-        api.defaults.headers.common["Authorization"] = token;
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
         try {
           navigate("/admin");
@@ -192,7 +192,7 @@ export default function AdminLogin() {
             Sign In to Dashboard
           </button>
           <button
-            type="button" // 👈 This prevents the form submission
+            type="button" 
             onClick={() => navigate("/Signin")}
             className="mt-4 text-sm text-[#8B5E3C] hover:text-[#6F4E37] transition-colors underline"
           >
