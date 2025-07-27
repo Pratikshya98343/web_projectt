@@ -28,7 +28,7 @@ export default function ContactSection() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
+      const response = await fetch('http://localhost:4000/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,11 +42,11 @@ export default function ContactSection() {
         alert('✅ Message sent successfully!');
         setFormData({ name: '', email: '', phone: '', message: '' });
       } else {
-        alert(` ${result.message}`);
+        alert(`${result.message}`);
       }
     } catch (error) {
       console.error('Submission error:', error);
-      alert(' Failed to send message.');
+      alert('Failed to send message.');
     } finally {
       setIsSubmitting(false);
     }
@@ -173,7 +173,7 @@ export default function ContactSection() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 px-6 bg-[#6F4E37] hover:bg-[#5D3A2A] disabled:bg-gray-500 rounded-lg font-semibold text-lg text-white transition-colors duration-200 shadow-md hover:shadow-lg"
+                className="w-full py-4 px-6 bg-[#6F4E37] hover:bg-[#5D3A2A] disabled:bg-gray-500 rounded-lg font-semibold text-lg text-black transition-colors duration-200 shadow-md hover:shadow-lg"
               >
                 {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>

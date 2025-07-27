@@ -10,6 +10,8 @@ import { orderRouter } from "./route/index.js";
 import dotenv from "dotenv";
 import router from "./route/uploadRoutes.js";
 import { createUploadsFolder } from "./security/helper.js";
+import contactRouter from "./route/contactRoute.js";
+import { sequelize } from "./config/database.js";
 
 dotenv.config();
 
@@ -27,8 +29,19 @@ app.use("/api/file", router);
 app.use("/api/category", categoryRouter);
 app.use("/api/product", productRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/contact", contactRouter);
 
 createUploadsFolder();
+
+(async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync({ alter: true });
+    console.log("database connected successfully");
+  } catch (error) {
+    console.error("Failed to connect database", error);
+  }
+})();
 
 app.listen(port, function () {
   console.log("project running in port:", port);

@@ -40,7 +40,7 @@ export function authenticateToken(req, res, next) {
         return res.status(403).send({ message: `Invalid or expired token: ${err.message}` });
       }
       
-      // console.log('Decoded token payload:', decoded);
+      console.log('Decoded token payload:', decoded);
       req.user = decoded;
       next();
     });

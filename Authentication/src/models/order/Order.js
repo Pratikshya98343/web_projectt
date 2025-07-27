@@ -11,6 +11,8 @@ export const Order = sequelize.define(
         model: "Users",
         key: "id",
       },
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     },
     orderNumber: {
       type: DataTypes.STRING,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Coffee, 
@@ -9,64 +9,59 @@ import {
   TrendingUp,
   Package,
 } from 'lucide-react';
+import api from '../../../api/axios';
+import { useSelector } from 'react-redux';
 
 const AdminDashboardPage = () => {
-  const orders = [
-    {
-      id: 1,
-      customerName: 'John Doe',
-      items: [{ name: 'Espresso', quantity: 1 }, { name: 'Croissant', quantity: 1 }],
-      total: 4.50,
-      time: '10:30 AM'
-    },
-    {
-      id: 2,
-      customerName: 'Jane Smith',
-      items: [{ name: 'Cappuccino', quantity: 1 }, { name: 'Morning Special', quantity: 1 }],
-      total: 8.00,
-      time: '11:15 AM'
-    },
-    {
-      id: 3,
-      customerName: 'Mike Johnson',
-      items: [{ name: 'Latte', quantity: 1 }, { name: 'Sandwich', quantity: 1 }],
-      total: 5.50,
-      time: '11:45 AM'
-    }
-  ];
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const token = useSelector((state) => state.user.token);
 
-  const products = [
-    {
-      id: 1,
-      name: 'Colombian Supremo - Smooth & Balanced',
-      price: 2.50,
-      category: 'Coffee',
-      image:  "./image/product2.png",
-      stock: 50
-    },
-    {
-      id: 2,
-      name: 'Sumatra Mandheling - Earthy & Bold"',
-      price: 3.50,
-      category: 'Coffee',
-      image: "./image/product3.png",
-      stock: 45
-    },
-    {
-      id: 3,
-      name: 'Brazil Santos - Sweet & Nutty',
-      price: 2.00,
-      category: 'Pastry',
-      image: "./image/product5.png",
-      stock: 20
+  useEffect(() => {
+    fetchOrders();
+    fetchProducts();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await api.get('/orders', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        setOrders(response.data.data || []);
+      } else {
+        console.error('Failed to fetch orders:', response);
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
     }
-  ];
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await api.get('/product', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log('fetchProducts response:', response);
+      if (response.status === 200) {
+        setProducts(response.data.data || []);
+      } else {
+        console.error('Failed to fetch products:', response);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
 
   // Stat Card Component
   const StatCard = ({ title, value, change, color }) => (
     <div className={`bg-white rounded-lg shadow-md p-4 flex items-center space-x-4`}>
       <div className={`w-8 h-8 rounded-full bg-${color}-100 flex items-center justify-center`}>
-        <span className={`text-${color}-600`}>$</span> {/* Replace with icon */}
+        <span className={`text-${color}-600`}>$</span>
       </div>
       <div>
         <p className="text-sm font-medium">{title}</p>
@@ -85,12 +80,12 @@ const AdminDashboardPage = () => {
         </div>
         <div>
           <p className="font-medium text-gray-800">{customerName}</p>
-          <p className="text-sm text-gray-600 truncate max-w-[150px]">{items.map((item) => item.name).join(", ")}</p>
+          <p className="text-sm text-gray-600 truncate max-w-[150px]">{items.map((item) => item.product.name).join(", ")}</p>
         </div>
       </div>
       <div className="text-right">
         <p className="font-bold text-orange-600">${total}</p>
-        <p className="text-xs text-gray-500">{time}</p>
+        <p className="text-xs text-gray-500">{new Date(time).toLocaleTimeString()}</p>
       </div>
     </div>
   );
@@ -102,7 +97,7 @@ const AdminDashboardPage = () => {
         <img src={image} alt={name} className="w-12 h-12 rounded object-cover ring-1 ring-gray-200" />
         <div>
           <p className="font-medium text-gray-800">{name}</p>
-          <p className="text-sm text-gray-600">{category}</p>
+          <p className="text-sm text-gray-600">{category?.name || "N/A"}</p>
         </div>
       </div>
       <div className="text-right">
@@ -116,14 +111,6 @@ const AdminDashboardPage = () => {
     <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 p-8">
       <div className="flex-grow w-full h-full bg-gray-100">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
-        
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard title="Total Revenue" value="$2,847" change="+12% from last month" color="orange" />
-          <StatCard title="Total Orders" value={orders.length} change="+5% from last week" color="green" />
-          <StatCard title="Customers" value="156" change="+8% new users" color="blue" />
-          <StatCard title="Growth" value="+12%" change="+3% from last month" color="purple" />
-        </div>
 
         {/* Recent Orders & Top Products */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
@@ -139,10 +126,10 @@ const AdminDashboardPage = () => {
               {orders.slice(0, 3).map((order) => (
                 <OrderItem
                   key={order.id}
-                  customerName={order.customerName}
+                  customerName={`${order.user.firstName} ${order.user.lastName}`}
                   items={order.items}
-                  total={order.total}
-                  time={order.time}
+                  total={order.totalAmount}
+                  time={order.createdAt}
                 />
               ))}
             </div>
@@ -152,7 +139,7 @@ const AdminDashboardPage = () => {
           <div className="bg-white rounded-lg shadow-md p-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Top Products</h3>
-              <Link to="/admin/products" className="text-sm font-medium text-orange-600 hover:text-orange-800">
+              <Link to="/admin/menu" className="text-sm font-medium text-orange-600 hover:text-orange-800">
                 View All
               </Link>
             </div>

@@ -11,12 +11,18 @@ router.get("/user", authenticateToken, orderController.getUserOrders);
 router.get("/:id", authenticateToken, orderController.getOrderById);
 
 // Admin-only routes
-router.get("/", authenticateToken, isAdmin, orderController.getAllOrders);
+router.get("/", authenticateToken, orderController.getAllOrders);
 router.patch(
   "/:id/status",
   authenticateToken,
   isAdmin,
   orderController.updateOrderStatus
+);
+router.delete(
+  "/:id",
+  authenticateToken,
+  isAdmin,
+  orderController.deleteOrder
 );
 
 export {router as orderRouter};

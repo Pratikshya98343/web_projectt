@@ -149,7 +149,7 @@ const getUserOrders = async (req, res) => {
 const getOrderById = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.user.id; // Get user ID from auth middleware
+    const userId = req.user.id; // Get user ID from auth middleware
     
     // Admin can view any order, regular users can only view their own orders
     const whereClause = req.user.user.role === 'admin' ? { id } : { id, userId };
@@ -189,7 +189,7 @@ const getOrderById = async (req, res) => {
 const getAllOrders = async (req, res) => {
   try {
     // Only admins can access all orders
-    if (req.user.user.role !== 'admin') {
+    if (req.user.role !== 'admin') {
       return res.status(403).json({ error: "Access denied. Admin role required." });
     }
     
@@ -204,7 +204,7 @@ const getAllOrders = async (req, res) => {
       }, {
         model: User,
         as: "user",
-        attributes: ["id", "firstName", "lastName", "email"] // Include only necessary user fields
+        attributes: ["id", "firstName", "lastName", "email"] 
       }],
       order: [["createdAt", "DESC"]]
     });
@@ -232,7 +232,7 @@ const getAllOrders = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     // Only admins can update order status
-    if (req.user.user.role !== 'admin') {
+    if (req.user.role !== 'admin') {
       return res.status(403).json({ error: "Access denied. Admin role required." });
     }
     
@@ -293,10 +293,38 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+/**
+ * Delete an order by ID (admin only)
+ * @param {Object} req - Request object with order ID
+ * @param {Object} res - Response object
+ */
+const deleteOrder = async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: "Access denied. Admin role required." });
+    }
+
+    const { id } = req.params;
+    const order = await Order.findByPk(id);
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    await order.destroy();
+
+    res.status(200).json({ message: "Order deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting order:", err);
+    res.status(500).json({ error: `Failed to delete order: ${err.message}` });
+  }
+};
+
 export const orderController = {
   createOrder,
   getUserOrders,
   getOrderById,
   getAllOrders,
-  updateOrderStatus
+  updateOrderStatus,
+  deleteOrder
 };
