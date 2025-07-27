@@ -20,6 +20,7 @@ import AdminSettings from "./pages/(admin)/adminsetting/AdminSetting";
 import AdminCategoriesPage from "./pages/(admin)/categories/AdminCategoriesPage";
 import AdminMenuPage from "./pages/(admin)/menu/AdminMenuPage";
 import AdminOrdersPage from "./pages/(admin)/orders/AdminOrdersPage";
+import AdminContactsPage from "./pages/(admin)/contacts/AdminContactsPage";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           />
           <Route exact path="/admin/menu" element={<AdminMenuPage />} />
           <Route exact path="/admin/orders" element={<AdminOrdersPage />} />
+          <Route exact path="/admin/contacts" element={<AdminContactsPage />} />
           <Route exact path="/admin/AdminProfile" element={<AdminProfile />} />
           <Route exact path="/admin/settings" element={<AdminSettings />} />
         </Route>

@@ -14,6 +14,7 @@ import {
   Package,
   Coffee,
   Tag,
+  MessageSquare,
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../redux/reducerSlice/UserSlice";
@@ -68,9 +69,7 @@ const AdminHeader = () => {
               <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
                 <User size={18} className="text-amber-800" />
               </div>
-              <span className="hidden md:block text-sm font-medium">
-                Admin
-              </span>
+              <span className="hidden md:block text-sm font-medium">Admin</span>
               <ChevronDown size={16} />
             </button>
 
@@ -128,6 +127,11 @@ const AdminSidebar = () => {
       name: "Orders",
       icon: <ShoppingCart className="h-5 w-5" />,
       url: "/admin/orders",
+    },
+    {
+      name: "Contact",
+      icon: <MessageSquare className="h-5 w-5" />,
+      url: "/admin/contacts",
     },
     {
       name: "Profile",
