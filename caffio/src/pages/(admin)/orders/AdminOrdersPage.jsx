@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Eye, Trash2 } from 'lucide-react';
-import api from '../../../api/axios';
+import React, { useState, useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
+import { Eye, Trash2 } from "lucide-react";
+import api from "../../../api/axios";
+import { OrderStatus } from "../../../lib/orderStatus";
 
 const AdminOrdersPage = () => {
   const [showOrderDetailsModal, setShowOrderDetailsModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [orderFilter, setOrderFilter] = useState('all');
+  const [orderFilter, setOrderFilter] = useState("all");
   const [orders, setOrders] = useState([]);
   const token = useSelector((state) => state.user.token);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchOrders();
@@ -16,7 +18,8 @@ const AdminOrdersPage = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await api.get('/orders', {
+      setIsLoading(true);
+      const response = await api.get("/orders", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -24,39 +27,45 @@ const AdminOrdersPage = () => {
       if (response.status === 200) {
         setOrders(response.data.data || []);
       } else {
-        console.error('Failed to fetch orders:', response);
+        console.error("Failed to fetch orders:", response);
       }
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error("Error fetching orders:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
-      const response = await api.patch(`/orders/${orderId}/status`, { status: newStatus });
+      const response = await api.patch(`/orders/${orderId}/status`, {
+        status: newStatus,
+      });
       if (response.status === 200) {
-        setOrders(orders.map(order =>
-          order.id === orderId ? { ...order, status: newStatus } : order
-        ));
+        setOrders(
+          orders.map((order) =>
+            order.id === orderId ? { ...order, status: newStatus } : order
+          )
+        );
       } else {
-        console.error('Failed to update order status:', response);
+        console.error("Failed to update order status:", response);
       }
     } catch (error) {
-      console.error('Error updating order status:', error);
+      console.error("Error updating order status:", error);
     }
   };
 
   const handleDeleteOrder = async (orderId) => {
-    if (window.confirm('Are you sure you want to delete this order?')) {
+    if (window.confirm("Are you sure you want to delete this order?")) {
       try {
         const response = await api.delete(`/orders/${orderId}`);
         if (response.status === 200) {
-          setOrders(orders.filter(order => order.id !== orderId));
+          setOrders(orders.filter((order) => order.id !== orderId));
         } else {
-          console.error('Failed to delete order:', response);
+          console.error("Failed to delete order:", response);
         }
       } catch (error) {
-        console.error('Error deleting order:', error);
+        console.error("Error deleting order:", error);
       }
     }
   };
@@ -88,14 +97,29 @@ const AdminOrdersPage = () => {
     );
   };
 
+  const handleSetColor = (status) => {
+    const statusObj = OrderStatus.find((s) => s.value === status);
+    return statusObj ? statusObj.color : "gray";
+  };
+
+  const filteredOrders = useMemo(() => {
+    if (!orders) return [];
+    if (orderFilter === "all") return orders;
+    return orders.filter((order) => order.status === orderFilter);
+  }, [orders, orderFilter]);
+
   return (
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-800">Orders Management</h2>
-              <p className="text-gray-600 mt-1">Track and manage customer orders</p>
+              <h2 className="text-3xl font-bold text-gray-800">
+                Orders Management
+              </h2>
+              <p className="text-gray-600 mt-1">
+                Track and manage customer orders
+              </p>
             </div>
             <div className="flex items-center space-x-4">
               <select
@@ -103,18 +127,21 @@ const AdminOrdersPage = () => {
                 onChange={(e) => setOrderFilter(e.target.value)}
                 className="px-4 py-2 rounded-lg border border-amber-200 focus:ring-2 focus:ring-amber-500 focus:border-transparent"
               >
-                <option value="all">All Orders</option>
-                <option value="new">New Orders</option>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
+                {[{ label: "All", value: "all" }, ...OrderStatus]?.map(
+                  (status) => (
+                    <option key={status.value} value={status.value}>
+                      {status.label}
+                    </option>
+                  )
+                )}
               </select>
               <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
-                {orders.filter(order => order.status === 'Pending').length} New Orders
+                {orders.filter((order) => order.status === "Pending").length}{" "}
+                New Orders
               </span>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-xl shadow-lg overflow-hidden p-6 w-full max-w-[1400px] mx-auto">
             <div className="overflow-x-auto">
               <table className="w-full text-base">
@@ -144,81 +171,106 @@ const AdminOrdersPage = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-amber-100">
-                  {orders
-                    .filter(order => {
-                      switch(orderFilter) {
-                        case 'new': return order.status === 'Pending';
-                        case 'in-progress': return order.status === 'In Progress';
-                        case 'completed': return order.status === 'Completed';
-                        case 'cancelled': return order.status === 'Cancelled';
-                        default: return true;
-                      }
-                    })
-                    .map(order => (
-                      <tr key={order.id} className="hover:bg-amber-50 transition-colors">
-                        <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-amber-900">
-                          #{order.id}
-                        </td>
-                        <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-900">{order.user.firstName} {order.user.lastName}</td>
-                        <td className="px-8 py-4 text-sm text-gray-900">
-                          {order.items.map(item => `${item.product.name} (${item.quantity})`).join(', ')}
-                        </td>
-                        <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-amber-600">${order.totalAmount}</td>
-                        <td className="px-8 py-4 whitespace-nowrap">
-                          <select
-                            value={order.status}
-                            onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
-                            className={`px-3 py-1 text-xs font-medium rounded-full border-none focus:ring-2 focus:ring-amber-500 ${
-                              order.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                              order.status === 'Pending' ? 'bg-amber-100 text-amber-800' :
-                              order.status === 'In Progress' ? 'bg-amber-200 text-amber-800' :
-                              'bg-red-100 text-red-800'
-                            }`}
-                          >
-                            <option value="Pending">Pending</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Cancelled">Cancelled</option>
-                          </select>
-                        </td>
-                        <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(order.createdAt).toLocaleTimeString()}</td>
-                        <td className="px-8 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleViewOrderDetails(order)}
-                              className="bg-amber-100 hover:bg-amber-200 text-black p-2 rounded-lg transition-colors"
-                              title="View Details"
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan="7" className="text-center py-8">
+                        <div className="flex justify-center items-center space-x-2">
+                          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-amber-500"></div>
+                          <span className="text-gray-600">
+                            Loading orders...
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : filteredOrders.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="7"
+                        className="text-center py-8 text-gray-500"
+                      >
+                        No orders found.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredOrders?.map((order) => {
+                      const color =
+                        OrderStatus.find(
+                          (status) => status.value === order.status
+                        )?.color || "gray";
+                      return (
+                        <tr
+                          key={order.id}
+                          className="hover:bg-amber-50 transition-colors"
+                        >
+                          <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-amber-900">
+                            #{order.id}
+                          </td>
+                          <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {order.user.firstName} {order.user.lastName}
+                          </td>
+                          <td className="px-8 py-4 text-sm text-gray-900">
+                            {order.items
+                              .map(
+                                (item) =>
+                                  `${item.product.name} (${item.quantity})`
+                              )
+                              .join(", ")}
+                          </td>
+                          <td className="px-8 py-4 whitespace-nowrap text-sm font-medium text-amber-600">
+                            ${order.totalAmount}
+                          </td>
+                          <td className="px-8 py-4 whitespace-nowrap">
+                            <select
+                              value={order.status}
+                              onChange={(e) =>
+                                handleUpdateOrderStatus(
+                                  order.id,
+                                  e.target.value
+                                )
+                              }
+                              className={`px-3 py-1 text-xs font-medium rounded-full border-none focus:ring-2 focus:ring-amber-500 
+                             bg-${color}-100 text-${color}-800`}
                             >
-                              <Eye className="h-4 w-4" />
-                            </button>
+                              {OrderStatus?.map((status) => (
+                                <option
+                                  key={status.value}
+                                  value={status.value}
+                                  className="bg-white"
+                                >
+                                  {status.label}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                          <td className="px-8 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {new Date(order.createdAt).toLocaleTimeString()}
+                          </td>
+                          <td className="px-8 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handleViewOrderDetails(order)}
+                                className="bg-amber-100 hover:bg-amber-200 text-black p-2 rounded-lg transition-colors"
+                                title="View Details"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </button>
 
-                            <button
-                              onClick={() => handleDeleteOrder(order.id)}
-                              className="bg-amber-700 hover:bg-amber-800 text-black p-2 rounded-lg transition-colors"
-                              title="Delete Order"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                              <button
+                                onClick={() => handleDeleteOrder(order.id)}
+                                className="bg-amber-700 hover:bg-amber-800 text-black p-2 rounded-lg transition-colors"
+                                title="Delete Order"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
-            {orders.filter(order => {
-              switch(orderFilter) {
-                case 'new': return order.status === 'Pending';
-                case 'in-progress': return order.status === 'In Progress';
-                case 'completed': return order.status === 'Completed';
-                case 'cancelled': return order.status === 'Cancelled';
-                default: return true;
-              }
-            }).length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                No orders found for the selected filter
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -235,58 +287,88 @@ const AdminOrdersPage = () => {
         {selectedOrder && (
           <div className="space-y-4">
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-2">Customer Information</h4>
-              <p><strong>Name:</strong> {selectedOrder.user.firstName} {selectedOrder.user.lastName}</p>
-              <p><strong>Email:</strong> {selectedOrder.user.email}</p>
+              <h4 className="font-semibold text-gray-800 mb-2">
+                Customer Information
+              </h4>
+              <p>
+                <strong>Name:</strong> {selectedOrder.user.firstName}{" "}
+                {selectedOrder.user.lastName}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedOrder.user.email}
+              </p>
             </div>
-            
+
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-2">Order Details</h4>
-              <p><strong>Date:</strong> {new Date(selectedOrder.createdAt).toLocaleDateString()}</p>
-              <p><strong>Time:</strong> {new Date(selectedOrder.createdAt).toLocaleTimeString()}</p>
-              <p><strong>Payment Method:</strong> {selectedOrder.paymentMethod}</p>
-              <p><strong>Status:</strong> 
-                <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${
-                  selectedOrder.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                  selectedOrder.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                  selectedOrder.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                  'bg-red-100 text-red-800'
-                }`}>
+              <h4 className="font-semibold text-gray-800 mb-2">
+                Order Details
+              </h4>
+              <p>
+                <strong>Date:</strong>{" "}
+                {new Date(selectedOrder.createdAt).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>Time:</strong>{" "}
+                {new Date(selectedOrder.createdAt).toLocaleTimeString()}
+              </p>
+              <p>
+                <strong>Payment Method:</strong> {selectedOrder.paymentMethod}
+              </p>
+              <p>
+                <strong>Status:</strong>
+                <span
+                  className={`ml-2 px-2 py-1 text-xs font-medium rounded-full bg-${handleSetColor(
+                    selectedOrder.status
+                  )}-100 text-${handleSetColor(selectedOrder.status)}-800`}
+                >
                   {selectedOrder.status}
                 </span>
               </p>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-2">Items Ordered</h4>
+              <h4 className="font-semibold text-gray-800 mb-2">
+                Items Ordered
+              </h4>
               <div className="space-y-2">
                 {selectedOrder.items.map((item, index) => (
-                  <div key={index} className="flex justify-between items-center">
-                    <span>{item.product.name} x{item.quantity}</span>
-                    <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                  <div
+                    key={index}
+                    className="flex justify-between items-center"
+                  >
+                    <span>
+                      {item.product.name} x{item.quantity}
+                    </span>
+                    <span className="font-medium">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
               <div className="border-t pt-2 mt-2">
                 <div className="flex justify-between items-center font-bold text-lg">
                   <span>Total:</span>
-                  <span className="text-amber-600">${selectedOrder.totalAmount.toFixed(2)}</span>
+                  <span className="text-amber-600">
+                    ${selectedOrder.totalAmount.toFixed(2)}
+                  </span>
                 </div>
               </div>
             </div>
 
             {selectedOrder.notes && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-800 mb-2">Special Notes</h4>
+                <h4 className="font-semibold text-gray-800 mb-2">
+                  Special Notes
+                </h4>
                 <p className="text-gray-700">{selectedOrder.notes}</p>
               </div>
             )}
 
             <div className="flex space-x-2">
-              {selectedOrder.status === 'Pending' && (
+              {selectedOrder.status === "pending" && (
                 <button
                   onClick={() => {
-                    handleUpdateOrderStatus(selectedOrder.id, 'In Progress');
+                    handleUpdateOrderStatus(selectedOrder.id, "processing");
                     setShowOrderDetailsModal(false);
                   }}
                   className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg transition-colors"
@@ -294,10 +376,10 @@ const AdminOrdersPage = () => {
                   Start Processing
                 </button>
               )}
-              {selectedOrder.status === 'In Progress' && (
+              {selectedOrder.status === "processing" && (
                 <button
                   onClick={() => {
-                    handleUpdateOrderStatus(selectedOrder.id, 'Completed');
+                    handleUpdateOrderStatus(selectedOrder.id, "completed");
                     setShowOrderDetailsModal(false);
                   }}
                   className="flex-1 bg-green-600 hover:bg-green-700 text-black py-2 px-4 rounded-lg transition-colors"
@@ -305,17 +387,18 @@ const AdminOrdersPage = () => {
                   Mark Complete
                 </button>
               )}
-              {selectedOrder.status !== 'Completed' && selectedOrder.status !== 'Cancelled' && (
-                <button
-                  onClick={() => {
-                    handleUpdateOrderStatus(selectedOrder.id, 'Cancelled');
-                    setShowOrderDetailsModal(false);
-                  }}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-black py-2 px-4 rounded-lg transition-colors"
-                >
-                  Cancel Order
-                </button>
-              )}
+              {selectedOrder.status !== "completed" &&
+                selectedOrder.status !== "cancelled" && (
+                  <button
+                    onClick={() => {
+                      handleUpdateOrderStatus(selectedOrder.id, "cancelled");
+                      setShowOrderDetailsModal(false);
+                    }}
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-black py-2 px-4 rounded-lg transition-colors"
+                  >
+                    Cancel Order
+                  </button>
+                )}
             </div>
           </div>
         )}
