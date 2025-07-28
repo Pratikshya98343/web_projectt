@@ -6,7 +6,6 @@ import path from "path";
 
 const router = express.Router();
 
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -32,7 +31,7 @@ const upload = multer({
 });
 
 router.get("/", authenticateToken, ProfileController.getProfile);
-router.put("/", authenticateToken, ProfileController.updateProfile);
+router.post("/", authenticateToken, ProfileController.updateProfile);
 router.post("/upload-image", authenticateToken, upload.single('profileImage'), ProfileController.uploadProfileImage);
 
 export { router as ProfileRouter };

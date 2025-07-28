@@ -90,7 +90,7 @@ export default function Menu() {
                   }}
                   className="w-full bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-white py-4 rounded-full font-semibold tracking-wide uppercase text-lg shadow-lg hover:from-[#A0522D] hover:to-[#CD853F] hover:-translate-y-1 transition mb-6"
                 >
-                  Add to Cart - NPR {selectedItem.price.toFixed(2)}
+                  Add to Cart - $ {selectedItem.price.toFixed(2)}
                 </button>
                 {/* Preparation Steps */}
                 <div>
@@ -185,7 +185,7 @@ export default function Menu() {
                     : item.description}
                 </p>
                 <div className="text-xl font-bold text-[#8B4513] mb-4">
-                  NPR{" "}
+                  ${" "}
                   {typeof item.price === "object"
                     ? item.price.value || ""
                     : item.price.toFixed(2)}

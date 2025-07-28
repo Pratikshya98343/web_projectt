@@ -371,7 +371,7 @@ const AdminOrdersPage = () => {
                     handleUpdateOrderStatus(selectedOrder.id, "processing");
                     setShowOrderDetailsModal(false);
                   }}
-                  className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg transition-colors"
+                  className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-black py-2 px-4 rounded-lg transition-colors"
                 >
                   Start Processing
                 </button>

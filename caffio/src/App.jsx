@@ -16,7 +16,7 @@ import AdminDashboardPage from "./pages/(admin)/admindashboard/AdminDashboardPag
 import MainLayout from "./layouts/MainLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminProfile from "./pages/(admin)/adminprofile/AdminProfile";
-import AdminSettings from "./pages/(admin)/adminsetting/AdminSetting";
+
 import AdminCategoriesPage from "./pages/(admin)/categories/AdminCategoriesPage";
 import AdminMenuPage from "./pages/(admin)/menu/AdminMenuPage";
 import AdminOrdersPage from "./pages/(admin)/orders/AdminOrdersPage";
@@ -58,7 +58,6 @@ function App() {
           <Route exact path="/admin/orders" element={<AdminOrdersPage />} />
           <Route exact path="/admin/contacts" element={<AdminContactsPage />} />
           <Route exact path="/admin/AdminProfile" element={<AdminProfile />} />
-          <Route exact path="/admin/settings" element={<AdminSettings />} />
         </Route>
 
         {/* For admin */}

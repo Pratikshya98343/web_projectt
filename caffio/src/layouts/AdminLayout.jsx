@@ -138,11 +138,6 @@ const AdminSidebar = () => {
       icon: <UserCircle className="h-5 w-5" />,
       url: "/admin/AdminProfile",
     },
-    {
-      name: "Settings",
-      icon: <Settings className="h-5 w-5" />,
-      url: "/admin/settings",
-    },
   ];
 
   return (

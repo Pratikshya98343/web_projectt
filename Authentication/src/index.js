@@ -11,6 +11,7 @@ import dotenv from "dotenv";
 import router from "./route/uploadRoutes.js";
 import { createUploadsFolder } from "./security/helper.js";
 import contactRouter from "./route/contactRoute.js";
+import {ProfileRouter} from "./route/profile/Profileroute.js";
 import { sequelize } from "./config/database.js";
 
 dotenv.config();
@@ -21,6 +22,9 @@ const port = process.env.PORT || 4000;
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static("uploads"));
+// In app.js or server.js
+// app.use(express.json());
+
 
 // app.use(authenticateToken);
 app.use("/api/users", userRouter);
@@ -30,6 +34,7 @@ app.use("/api/category", categoryRouter);
 app.use("/api/product", productRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/contact", contactRouter);
+app.use("/api/accountprofile", ProfileRouter);
 
 createUploadsFolder();
 

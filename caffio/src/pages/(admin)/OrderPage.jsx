@@ -44,7 +44,7 @@ export default function OrderPage() {
               <tr key={order.id}>
                 <td className="border border-gray-300 p-2">{order.orderNumber}</td>
                 <td className="border border-gray-300 p-2">{order.userId}</td>
-                <td className="border border-gray-300 p-2">NPR {order.totalAmount.toFixed(2)}</td>
+                <td className="border border-gray-300 p-2">$ {order.totalAmount.toFixed(2)}</td>
                 <td className="border border-gray-300 p-2">{order.status}</td>
                 <td className="border border-gray-300 p-2">{new Date(order.createdAt).toLocaleString()}</td>
               </tr>
