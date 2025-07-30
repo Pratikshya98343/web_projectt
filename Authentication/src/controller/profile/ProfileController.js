@@ -5,13 +5,17 @@ import path from "path";
 class ProfileController {
   static async getProfile(req, res) {
     try {
-      console.log("Fetching profile for user:", req.user);
       const userId = req.user.id;
-      const user = await User.findByPk(userId);
+      const user = await User.findByPk(userId, { raw: true });
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      res.status(200).json({ data: user });
+      res.status(200).json({
+        data: {
+          ...user,
+          profileImage: `${process.env.SERVER_URL}/${user.profileImage}`,
+        },
+      });
     } catch (error) {
       console.error("Failed to fetch profile:", error);
       res.status(500).json({ error: "Failed to fetch profile" });
@@ -27,22 +31,12 @@ class ProfileController {
           .json({ message: "Unauthorized: User not authenticated" });
       }
 
-      const { name, email, phone, address } = req.body;
+      const { firstName, lastName, email } = req.body;
 
-      // Split name into firstName and lastName
-      let firstName = "";
-      let lastName = "";
-
-      console.log("Updating profile with data:", req.body);
-      if (name && typeof name === "string") {
-        const trimmedName = name.trim();
-        if (trimmedName.includes(" ")) {
-          const parts = trimmedName.split(" ");
-          firstName = parts.shift();
-          lastName = parts.join(" ");
-        } else {
-          firstName = trimmedName;
-        }
+      if (!firstName || !lastName || !email) {
+        return res.status(400).json({
+          message: "First name, last name, and email are required",
+        });
       }
 
       // Update user profile
@@ -51,8 +45,6 @@ class ProfileController {
           firstName,
           lastName,
           email,
-          phone,
-          address,
         },
         { where: { id: userId } }
       );

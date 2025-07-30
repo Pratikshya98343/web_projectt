@@ -48,11 +48,7 @@ const AccountProfile = () => {
                 month: "long",
               })
             : "",
-          profileImage: userData.profileImage
-            ? userData.profileImage.startsWith("http")
-              ? userData.profileImage
-              : `/uploads/${userData.profileImage}`
-            : null,
+          profileImage: userData.profileImage,
         };
 
         setUserInfo(formattedData);
@@ -81,23 +77,18 @@ const AccountProfile = () => {
       formData.append("profileImage", file);
 
       try {
-        const response = await api.post("/profile/upload-image", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const response = await api.patch(
+          "/accountProfile/upload-image",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
         if (response.status === 200) {
-          const result = response.data;
-          // Update profile image in state
-          setUserInfo((prev) => ({
-            ...prev,
-            profileImage: result.data.profileImage
-              ? result.data.profileImage.startsWith("http")
-                ? result.data.profileImage
-                : `/uploads/${result.data.profileImage}`
-              : prev.profileImage,
-          }));
+          fetchProfile(); // Refresh profile after upload
           alert("Profile image uploaded successfully!");
         } else {
           const errorData = response.data;
@@ -122,10 +113,14 @@ const AccountProfile = () => {
 
   const handleSave = async () => {
     try {
-      const response = await api.put("/profile", userInfo);
-      console.log("Response from save:", response);
+      const response = await api.patch("/accountProfile", {
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        email: userInfo.email,
+      });
 
       if (response.status === 200) {
+        fetchProfile(); // Refresh profile after save
         alert("Profile updated successfully!");
         setIsEditing(false);
         setOriginalInfo({ ...userInfo });

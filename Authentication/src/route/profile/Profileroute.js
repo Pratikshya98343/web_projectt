@@ -31,7 +31,7 @@ const upload = multer({
 });
 
 router.get("/", authenticateToken, ProfileController.getProfile);
-router.post("/", authenticateToken, ProfileController.updateProfile);
-router.post("/upload-image", authenticateToken, upload.single('profileImage'), ProfileController.uploadProfileImage);
+router.patch("/", authenticateToken, ProfileController.updateProfile);
+router.patch("/upload-image", authenticateToken, upload.single('profileImage'), ProfileController.uploadProfileImage);
 
 export { router as ProfileRouter };
