@@ -1,31 +1,44 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../config/database.js';
+'use strict';
 
-const Profile = sequelize.define('ContactMessage', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable('profiles', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      FullName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      Email_Address: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      Phone_Number: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      Delivery_Message: {
+        type: Sequelize.TEXT,
+        allowNull: false
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      }
+    });
   },
-  FullName: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  Email_Address: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  Phone_Number: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  Delivery_Message: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-}, {
-  tableName: 'profiles',
-  timestamps: true,
-});
 
-export default Profile;
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('profiles');
+  }
+};

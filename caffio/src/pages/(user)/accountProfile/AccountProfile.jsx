@@ -18,10 +18,10 @@ import api from "../../../api/axios";
 const AccountProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
+    FullName: "",
+    Email_Address: "",
+    Phone_Number: "",
+    Delivery_Message: "",
     joinDate: "",
     profileImage: null,
   });
@@ -34,7 +34,8 @@ const AccountProfile = () => {
   }, []);
  
   const fetchProfile = async () => {
- 
+    const token = localStorage.getItem("token");
+
     try {
       if (!token) {
         console.error("No authentication token found");
@@ -137,21 +138,27 @@ const AccountProfile = () => {
   };
  
   const handleSave = async () => {
+    const token = localStorage.getItem("token");
+
     try {
-      const response = await api.post("/accountprofile", {
-        body: userInfo
-      });
+      const response = await api.post(
+        "/accountprofile",
+        userInfo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("Response from save:", response);
  
-      if (response.ok) {
-        // const result = await response.json();
+      if (response.status === 200) {
         alert("Profile updated successfully!");
         setIsEditing(false);
         setOriginalInfo({ ...userInfo });
       } else {
-        const errorData = await response.json();
         alert(
-          `Failed to update profile: ${errorData.message || "Unknown error"}`
+          `Failed to update profile: ${response.statusText || "Unknown error"}` 
         );
       }
     } catch (error) {

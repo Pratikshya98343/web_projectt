@@ -40,11 +40,6 @@ const Header = () => {
     navigate("/accountProfile");
   };
 
-  const handleAccountSettings = () => {
-    setShowUserMenu(false);
-    navigate("/account-settings");
-  };
-
   const handleLogout = () => {
     dispatch(logoutUser());
     setShowUserMenu(false);
@@ -114,13 +109,6 @@ const Header = () => {
               className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-amber-900"
             >
               Account
-            </button>
-
-            <button
-              onClick={handleAccountSettings}
-              className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-amber-900"
-            >
-              Settings
             </button>
 
             <button

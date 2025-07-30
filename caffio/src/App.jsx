@@ -11,12 +11,10 @@ import CheckoutPage from "./pages/(user)/checkout/Checkout";
 import OrderSuccess from "./pages/(user)/order-success/OrderSuccess";
 import Admin from "./pages/(admin)/adminlogin/Admin";
 import AccountProfile from "./pages/(user)/accountProfile/AccountProfile";
-import AccountSetting from "./pages/(user)/accountSetting/AccountSetting";
 import AdminDashboardPage from "./pages/(admin)/admindashboard/AdminDashboardPage";
 import MainLayout from "./layouts/MainLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminProfile from "./pages/(admin)/adminprofile/AdminProfile";
-
 import AdminCategoriesPage from "./pages/(admin)/categories/AdminCategoriesPage";
 import AdminMenuPage from "./pages/(admin)/menu/AdminMenuPage";
 import AdminOrdersPage from "./pages/(admin)/orders/AdminOrdersPage";
@@ -43,7 +41,6 @@ function App() {
 
           <Route exact path="/signin" element={<Signin />} />
           <Route exact path="/AccountProfile" element={<AccountProfile />} />
-          <Route exact path="/account-settings" element={<AccountSetting />} />
           <Route exact path="/signup" element={<Signup />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
