@@ -9,6 +9,10 @@ export const User = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
+    profileImage: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -25,12 +29,12 @@ export const User = sequelize.define(
       type: DataTypes.STRING,
     },
     role: {
-      type: DataTypes.ENUM('user', 'admin'),
-      defaultValue: 'user',
+      type: DataTypes.ENUM("user", "admin"),
+      defaultValue: "user",
       allowNull: false,
-    }
+    },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );

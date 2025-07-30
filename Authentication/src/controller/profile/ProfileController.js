@@ -5,6 +5,7 @@ import path from "path";
 class ProfileController {
   static async getProfile(req, res) {
     try {
+      console.log("Fetching profile for user:", req.user);
       const userId = req.user.id;
       const user = await User.findByPk(userId);
       if (!user) {

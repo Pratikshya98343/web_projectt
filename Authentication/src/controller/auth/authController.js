@@ -55,8 +55,8 @@ const login = async (req, res) => {
     }
 
    
-    console.log("User found:", user.toJSON()); 
-    console.log("User role:", user.role);     
+    // console.log("User found:", user.toJSON()); 
+    // console.log("User role:", user.role);     
    
     // if (user.role === 'admin') {
     //   console.log("Attempted login by admin through user endpoint. Blocking.");
@@ -74,7 +74,7 @@ const login = async (req, res) => {
     const userData = { ...user.toJSON() };
     delete userData.password;
 
-    console.log("User successfully logged in:", userData.email); 
+    // console.log("User successfully logged in:", userData.email); 
     return res.status(200).send({
       data: {
         user: userData,

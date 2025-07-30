@@ -41,7 +41,7 @@ export function authenticateToken(req, res, next) {
       }
       
       console.log('Decoded token payload:', decoded);
-      req.user = decoded;
+      req.user = decoded.user;
       next();
     });
   } catch (error) {

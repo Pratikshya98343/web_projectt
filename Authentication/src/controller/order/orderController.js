@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 const createOrder = async (req, res) => {
   try {
     const { items, shippingAddress, paymentMethod } = req.body;
-    const userId = req.user.user.id; 
+    const userId = req.user.id; 
     
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: "Order must include at least one item" });
@@ -111,7 +111,7 @@ const createOrder = async (req, res) => {
  */
 const getUserOrders = async (req, res) => {
   try {
-    const userId = req.user.user.id; // Get user ID from auth middleware
+    const userId = req.user.id; // Get user ID from auth middleware
     
     const orders = await Order.findAll({
       where: { userId },
@@ -152,7 +152,7 @@ const getOrderById = async (req, res) => {
     const userId = req.user.id; // Get user ID from auth middleware
     
     // Admin can view any order, regular users can only view their own orders
-    const whereClause = req.user.user.role === 'admin' ? { id } : { id, userId };
+    const whereClause = req.user.role === 'admin' ? { id } : { id, userId };
     
     const order = await Order.findOne({
       where: whereClause,

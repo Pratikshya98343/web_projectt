@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useSelector} from 'react-redux';
- 
- 
+import { useSelector } from "react-redux";
+
 import {
   User,
   Edit,
@@ -14,55 +13,35 @@ import {
   X,
 } from "lucide-react";
 import api from "../../../api/axios";
- 
+
 const AccountProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    FullName: "",
-    Email_Address: "",
-    Phone_Number: "",
-    Delivery_Message: "",
+    firstName: "",
+    lastName: "",
+    email: "",
     joinDate: "",
     profileImage: null,
   });
- 
+
   const [originalInfo, setOriginalInfo] = useState({ ...userInfo });
   const [loading, setLoading] = useState(true);
- 
   useEffect(() => {
     fetchProfile();
   }, []);
- 
-  const fetchProfile = async () => {
-    const token = localStorage.getItem("token");
 
+  const fetchProfile = async () => {
     try {
-      if (!token) {
-        console.error("No authentication token found");
-        setLoading(false);
-        return;
-      }
- 
-      const response = await fetch("/api/accountprofile", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
- 
-      if (response.ok) {
-        const result = await response.json();
+      const response = await api.get("/accountprofile");
+
+      if (response.status === 200) {
+        const result = response.data;
         const userData = result.data || result.user;
- 
+
         const formattedData = {
-          name:
-            userData.firstName || userData.name
-              ? `${userData.firstName || ""} ${userData.lastName || ""}`.trim()
-              : "",
+          firstName: userData.firstName || "",
+          lastName: userData.lastName || "",
           email: userData.email || "",
-          phone: userData.phone || "",
-          address: userData.address || "",
           joinDate: userData.createdAt
             ? new Date(userData.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
@@ -70,10 +49,12 @@ const AccountProfile = () => {
               })
             : "",
           profileImage: userData.profileImage
-            ? `/uploads/${userData.profileImage}`
+            ? userData.profileImage.startsWith("http")
+              ? userData.profileImage
+              : `/uploads/${userData.profileImage}`
             : null,
         };
- 
+
         setUserInfo(formattedData);
         setOriginalInfo(formattedData);
       } else {
@@ -85,93 +66,90 @@ const AccountProfile = () => {
       setLoading(false);
     }
   };
- 
+
   const handleInputChange = (field, value) => {
     setUserInfo((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
- 
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const formData = new FormData();
       formData.append("profileImage", file);
- 
+
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("/api/accountprofile/upload-image", {
-          method: "POST",
+        const response = await api.post("/profile/upload-image", formData, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
-          body: formData,
         });
- 
-        if (response.ok) {
-          const result = await response.json();
+
+        if (response.status === 200) {
+          const result = response.data;
           // Update profile image in state
           setUserInfo((prev) => ({
             ...prev,
             profileImage: result.data.profileImage
-              ? `/uploads/${result.data.profileImage}`
+              ? result.data.profileImage.startsWith("http")
+                ? result.data.profileImage
+                : `/uploads/${result.data.profileImage}`
               : prev.profileImage,
           }));
           alert("Profile image uploaded successfully!");
         } else {
-          const errorData = await response.json();
+          const errorData = response.data;
           alert(
             `Failed to upload image: ${errorData.message || "Unknown error"}`
           );
         }
       } catch (error) {
         console.error("Error uploading image:", error);
-        alert("Failed to upload image");
+        alert(
+          "Failed to upload image: " +
+            (error.response?.data?.message || error.message || "Unknown error")
+        );
       }
     }
   };
- 
+
   const handleEdit = () => {
     setOriginalInfo({ ...userInfo });
     setIsEditing(true);
   };
- 
-  const handleSave = async () => {
-    const token = localStorage.getItem("token");
 
+  const handleSave = async () => {
     try {
-      const response = await api.post(
-        "/accountprofile",
-        userInfo,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api.put("/profile", userInfo);
       console.log("Response from save:", response);
- 
+
       if (response.status === 200) {
         alert("Profile updated successfully!");
         setIsEditing(false);
         setOriginalInfo({ ...userInfo });
       } else {
         alert(
-          `Failed to update profile: ${response.statusText || "Unknown error"}` 
+          `Failed to update profile: ${
+            response.data?.message || response.statusText || "Unknown error"
+          }`
         );
       }
     } catch (error) {
       console.error("Error saving profile:", error);
-      alert("Failed to save profile");
+      alert(
+        "Failed to save profile: " +
+          (error.response?.data?.message || error.message || "Unknown error")
+      );
     }
   };
- 
+
   const handleCancel = () => {
     setUserInfo({ ...originalInfo });
     setIsEditing(false);
   };
- 
+
   if (loading) {
     return (
       <div className="w-screen h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
@@ -179,7 +157,7 @@ const AccountProfile = () => {
       </div>
     );
   }
- 
+
   return (
     <div className="w-screen min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 py-8 px-4">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -190,7 +168,7 @@ const AccountProfile = () => {
             Manage your personal information and view your activity
           </p>
         </div>
- 
+
         {/* Profile Section */}
         <div className="bg-white rounded-lg shadow-lg border border-amber-200 p-6 mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -224,7 +202,7 @@ const AccountProfile = () => {
               </div>
             )}
           </div>
- 
+
           <div className="flex flex-col md:flex-row gap-8">
             {/* Profile Picture */}
             <div className="flex flex-col items-center">
@@ -253,55 +231,54 @@ const AccountProfile = () => {
                 )}
               </div>
             </div>
- 
+
             {/* User Details */}
             <div className="flex-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-amber-800 mb-2">
-                    Full Name
+                    First Name
                   </label>
                   {isEditing ? (
                     <input
                       type="text"
-                      value={userInfo.name}
-                      name="name"
+                      value={userInfo.firstName}
+                      name="firstName"
                       onChange={(e) =>
-                        handleInputChange("name", e.target.value)
+                        handleInputChange("firstName", e.target.value)
                       }
                       className="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                       placeholder="Enter full name"
                     />
                   ) : (
                     <p className="text-amber-900 py-2 font-medium">
-                      {userInfo.name || "Not provided"}
+                      {userInfo.firstName || "Not provided"}
                     </p>
                   )}
                 </div>
- 
+
                 <div>
                   <label className="block text-sm font-medium text-amber-800 mb-2">
-                    Phone Number
+                    Last Name
                   </label>
                   {isEditing ? (
                     <input
-                      type="tel"
-                      name="phone"
-                      value={userInfo.phone}
+                      type="text"
+                      name="lastName"
+                      value={userInfo.lastName}
                       onChange={(e) =>
-                        handleInputChange("phone", e.target.value)
+                        handleInputChange("lastName", e.target.value)
                       }
                       className="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                       placeholder="Enter phone number"
                     />
                   ) : (
                     <p className="text-amber-900 py-2 flex items-center gap-2">
-                      <Phone size={16} className="text-amber-600" />
-                      {userInfo.phone || "Not provided"}
+                      {userInfo.lastName || "Not provided"}
                     </p>
                   )}
                 </div>
- 
+
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-amber-800 mb-2">
                     Email Address
@@ -323,29 +300,8 @@ const AccountProfile = () => {
                     </p>
                   )}
                 </div>
- 
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-amber-800 mb-2">
-                    Delivery Address
-                  </label>
-                  {isEditing ? (
-                    <textarea
-                      value={userInfo.address}
-                      onChange={(e) =>
-                        handleInputChange("address", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 h-20 resize-none"
-                      placeholder="Enter your delivery address"
-                    />
-                  ) : (
-                    <p className="text-amber-900 py-2 flex items-start gap-2">
-                      <MapPin size={16} className="text-amber-600 mt-1" />
-                      {userInfo.address || "Not provided"}
-                    </p>
-                  )}
-                </div>
               </div>
- 
+
               <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
                 <p className="text-sm text-amber-700 flex items-center gap-2">
                   <Calendar size={16} />
@@ -359,7 +315,5 @@ const AccountProfile = () => {
     </div>
   );
 };
- 
+
 export default AccountProfile;
- 
- 
