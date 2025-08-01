@@ -16,23 +16,19 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ error: "Order must include at least one item" });
     }
     
-    // Calculate total amount and validate items
     let totalAmount = 0;
     const orderItems = [];
     
     for (const item of items) {
-      // Validate required fields
       if (!item.productId || !item.quantity || item.quantity <= 0) {
         return res.status(400).json({ error: "Each item must have a valid productId and quantity" });
       }
       
-      // Get product to confirm price
       const product = await Coffee.findByPk(item.productId);
       if (!product) {
         return res.status(404).json({ error: `Product with ID ${item.productId} not found` });
       }
-      
-      // Calculate subtotal for this item
+   
       const price = product.price;
       const subtotal = price * item.quantity;
       totalAmount += subtotal;

@@ -39,16 +39,27 @@ function SignIn() {
     const { rememberMe, ...userData } = data;
 
     try {
-      const { data, status } = await api.post("/auth/login", userData);
-      if (status === 200) {
-        dispatch(
-          loginUser({ user: data.data.user, token: data.data.access_token })
-        );
+      const response = await api.post("/auth/login", userData);
+
+      // ✅ Destructure correctly: response.data contains the server response
+      const { data: responseData, status } = response;
+
+      if (status === 200 && responseData?.data?.access_token) {
+        const { user, access_token: token } = responseData.data;
+
+        // ✅ Save to localStorage for persistent auth
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // ✅ Dispatch to Redux
+        dispatch(loginUser({ user, token }));
+
+        // ✅ Redirect
         navigate("/");
         return;
+      } else {
+        throw new Error("Login failed");
       }
-
-      console.error("Login failed with status:", response?.data?.message);
     } catch (error) {
       const message =
         error?.response?.data?.message || "Invalid email or password";
@@ -158,7 +169,7 @@ function SignIn() {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#F5E6D3] via-[#DCC7B1] to-[#6F4E37] p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb--8">
+        <div className="text-center mb-6">
           <div className="w-16 h-14 bg-gradient-to-r from-[#6F4E37] to-[#5D3A2A] rounded-2xl mx-auto flex items-end justify-center pb-1">
             <LockIcon className="w-10 h-10 text-white" />
           </div>
@@ -226,7 +237,6 @@ function SignIn() {
               </button>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isSubmitting}

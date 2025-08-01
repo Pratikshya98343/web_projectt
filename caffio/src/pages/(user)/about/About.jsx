@@ -1,7 +1,8 @@
 import React from 'react';
 export default function About() {
   return (
-    <section id="About" className="relative min-h-screen  w-screen bg-gradient-to-br from-[#2C1810] via-[#8B4513] to-[#D2691E] text-white overflow-hidden pt-24">
+    <section id="About" className="relative min-h-screen  w-screen bg-gradient-to-br from-[#2C1810] via-[#8B4513] to-[#D2691E] text-white
+     overflow-hidden pt-24">
    
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-32 h-32 bg-white rounded-full blur-3xl animate-pulse"></div>
@@ -11,7 +12,8 @@ export default function About() {
       <div className="container mx-auto px-6 py-12 relative z-10"> 
         {/* Hero Title */}
         <div className="text-center mb-20">
-          <h2 className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-orange-200 via-white to-orange-300 bg-clip-text text-transparent animate-pulse">
+          <h2 className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-orange-200 via-white to-orange-300 bg-clip-text
+           text-transparent animate-pulse">
             ABOUT US
           </h2>
           <div className="w-32 h-1 bg-gradient-to-r from-orange-400 to-yellow-400 mx-auto rounded-full"></div>

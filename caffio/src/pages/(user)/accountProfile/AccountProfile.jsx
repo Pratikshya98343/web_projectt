@@ -120,7 +120,7 @@ const AccountProfile = () => {
       });
 
       if (response.status === 200) {
-        fetchProfile(); // Refresh profile after save
+        fetchProfile(); 
         alert("Profile updated successfully!");
         setIsEditing(false);
         setOriginalInfo({ ...userInfo });
@@ -147,14 +147,14 @@ const AccountProfile = () => {
 
   if (loading) {
     return (
-      <div className="w-screen h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
+      <div className="w-screen h-screen  bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
         <div className="text-amber-800">Loading profile...</div>
       </div>
     );
   }
 
   return (
-    <div className="w-screen min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 py-8 px-4">
+    <div className="w-screen min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 py-32 px-4">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">

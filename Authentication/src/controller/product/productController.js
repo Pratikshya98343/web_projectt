@@ -30,9 +30,6 @@ const addProduct = async (req, res) => {
   }
 };
 
-/**
- * get all products
- */
 
 const getAllProducts = async (req, res) => {
   try {

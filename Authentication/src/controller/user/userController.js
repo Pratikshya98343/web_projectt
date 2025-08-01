@@ -1,21 +1,14 @@
 import { User } from "../../models/index.js";
 
-/**
- *  fetch all users
- */
+
 const getAll = async (req, res) => {
   try {
-    //fetching all the data from users table
     const users = await User.findAll();
     res.status(200).send({ data: users, message: "successfully fetched data" });
   } catch (e) {
     res.status(500).json({ error: "Failed to fetch users" });
   }
 };
-
-/**
- *  create new user
- */
 
 const create = async (req, res) => {
   try {
